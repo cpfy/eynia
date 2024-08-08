@@ -1,0 +1,21 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="300"
+        x:Class="eynia.RestWindow"
+        WindowState="Maximized"
+        Title="MAIN Window">
+
+    <DockPanel LastChildFill="False">
+        <!-- 其他控件可以在这里添加 -->
+
+        <!-- 右下角的退出全屏按钮 -->
+        <Button Content="退出休息"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                Margin="0, 0, 10, 10"
+                Click="ExitWindows_Click"/>
+    </DockPanel>
+
+</Window>

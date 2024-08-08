@@ -7,4 +7,29 @@
     <Application.Styles>
         <FluentTheme />
     </Application.Styles>
+
+    <TrayIcon.Icons>
+        <TrayIcons>
+        <TrayIcon Icon="/Assets/eynia.ico"
+                    ToolTipText="下次休息：xxx\n 剩余时间：xxx">
+            <TrayIcon.Menu>
+            <NativeMenu>
+                <NativeMenuItem Header="设置属性" />
+                <NativeMenuItem Header="休息方案" />
+                <NativeMenuItem Header="推迟休息">
+                    <NativeMenu>
+                    <NativeMenuItem Header="3分钟"   />
+                    <NativeMenuItem Header="5分钟"   />
+                    <NativeMenuItem Header="8分钟"  />
+                    </NativeMenu>
+                </NativeMenuItem>
+                <NativeMenuItem Header="立即休息" Click="OpenRestWindow" />
+                <!-- <NativeMenuItemSeparator /> -->
+                <NativeMenuItem Header="退出" Click="ExitApp" />
+            </NativeMenu>
+            </TrayIcon.Menu>
+        </TrayIcon>
+        </TrayIcons>
+    </TrayIcon.Icons>
+
 </Application>
