@@ -1,0 +1,28 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:eynia.ViewModels"
+        x:CompileBindings="True"
+        x:DataType="vm:BubbleWindowViewModel"
+        x:Class="eynia.Views.BubbleWindow"
+        Title="Bubble Window"
+        Width="80"
+        MaxWidth="80"
+        Height="80"
+        MaxHeight="80"
+        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaChromeHints="NoChrome"
+        ExtendClientAreaTitleBarHeightHint="-1"
+        SystemDecorations="None">
+
+    <Design.DataContext>
+        <vm:BubbleWindowViewModel/>
+    </Design.DataContext>
+
+    <Border Name="Border" Width="80" Height="80" CornerRadius="10">
+        <Grid>
+            <!-- 在XAML中，元素的堆叠顺序是由它们在代码中出现的顺序决定的：后添加的元素会显示在前添加的元素之上 -->
+            <ProgressBar Name="RemainTimeBar" Minimum="0" Maximum="100" Value="{Binding RemainTimeBarValue}" Height="80" Width="80" MaxWidth="80" Foreground="LightBlue"/>
+            <TextBlock Name="TimeTextBlock" Text="{Binding RemainingTimeStr}" FontSize="22" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+        </Grid>
+    </Border>
+</Window>

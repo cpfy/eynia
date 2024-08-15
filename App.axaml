@@ -1,5 +1,6 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:views="clr-namespace:eynia.Views"
              x:Class="eynia.App"
              RequestedThemeVariant="Default">
              <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
@@ -13,20 +14,26 @@
         <TrayIcon Icon="/Assets/eynia.ico"
                     ToolTipText="下次休息：xxx\n 剩余时间：xxx">
             <TrayIcon.Menu>
-            <NativeMenu>
+                <!-- 使用引入的axaml替代，避免写在App.axaml中 -->
+                <!-- <views:TrayIconMenu/> -->
+                <NativeMenu>
+                <!-- NativeMenuItem 内容 -->
                 <NativeMenuItem Header="设置属性" />
                 <NativeMenuItem Header="休息方案" />
                 <NativeMenuItem Header="推迟休息">
                     <NativeMenu>
-                    <NativeMenuItem Header="3分钟"   />
-                    <NativeMenuItem Header="5分钟"   />
-                    <NativeMenuItem Header="8分钟"  />
+                    <!-- <NativeMenuItem Header="3分钟" Click="DelayRest" Command="{Binding AddMinutesCommand}" />
+                    <NativeMenuItem Header="5分钟" Click="DelayRest" Command="{Binding AddMinutesCommand}" />
+                    <NativeMenuItem Header="8分钟" Click="DelayRest" Command="{Binding AddMinutesCommand}" /> -->
+                    <NativeMenuItem Header="3分钟" />
+                    <NativeMenuItem Header="5分钟" />
+                    <NativeMenuItem Header="8分钟" />
                     </NativeMenu>
                 </NativeMenuItem>
                 <NativeMenuItem Header="立即休息" Click="OpenRestWindow" />
                 <!-- <NativeMenuItemSeparator /> -->
                 <NativeMenuItem Header="退出" Click="ExitApp" />
-            </NativeMenu>
+                </NativeMenu>
             </TrayIcon.Menu>
         </TrayIcon>
         </TrayIcons>
