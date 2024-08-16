@@ -18,7 +18,7 @@
                 <!-- <views:TrayIconMenu/> -->
                 <NativeMenu>
                 <!-- NativeMenuItem 内容 -->
-                <NativeMenuItem Header="设置属性" />
+                <NativeMenuItem Header="设置属性" Click="OpenSettingWindow" />
                 <NativeMenuItem Header="休息方案" />
                 <NativeMenuItem Header="推迟休息">
                     <NativeMenu>
@@ -33,6 +33,9 @@
                 <NativeMenuItem Header="立即休息" Click="OpenRestWindow" />
                 <!-- <NativeMenuItemSeparator /> -->
                 <NativeMenuItem Header="退出" Click="ExitApp" />
+                    <!-- <MenuItem.Icon>
+                        <PathIcon Data="{StaticResource power_regular}"/>
+                    </MenuItem.Icon> -->
                 </NativeMenu>
             </TrayIcon.Menu>
         </TrayIcon>

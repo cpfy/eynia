@@ -2,20 +2,49 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="using:eynia.ViewModels"
         mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="300"
+        x:CompileBindings="True"
+        x:DataType="vm:RestWindowViewModel"
         x:Class="eynia.Views.RestWindow"
         WindowState="Maximized"
         Title="MAIN Window">
 
-    <DockPanel LastChildFill="False">
-        <!-- 其他控件可以在这里添加 -->
+    <Design.DataContext>
+        <vm:RestWindowViewModel />
+    </Design.DataContext>
 
-        <!-- 右下角的退出全屏按钮 -->
-        <Button Content="退出休息"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Bottom"
-                Margin="0, 0, 10, 10"
-                Click="ExitWindows_Click"/>
-    </DockPanel>
+    <Grid>
+        <!-- 定义两行和两列，分别用于TextBlock和Button -->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+
+        <!-- 居中的TextBlock -->
+        <TextBlock
+            Grid.Row="0"
+            Grid.Column="0"
+            Grid.ColumnSpan="2"
+            Name="TimeTextBlock"
+            Text="{Binding RemainingTimeStr}"
+            FontSize="72"
+            VerticalAlignment="Center"
+            HorizontalAlignment="Center" />
+
+        <!-- 右下角的退出按钮 -->
+        <Button
+            Grid.Row="1"
+            Grid.Column="1"
+            Content="退出休息"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Bottom"
+            Margin="0, 0, 10, 10"
+            Command="{Binding ExitCommand}" />
+    </Grid>
 
 </Window>

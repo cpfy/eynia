@@ -58,5 +58,10 @@ namespace eynia.Views
                 ViewModel.CancelTimer();
             }
         }
+
+        public void ResetTimer()
+        {
+            ViewModel?.ResetTimer();
+        }
     }
 }

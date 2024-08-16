@@ -43,6 +43,12 @@ namespace eynia
             restWindow.Show();
         }
 
+        private void OpenSettingWindow(object sender, EventArgs e)
+        {
+            var settingWindow = new SettingWindow();
+            settingWindow.Show();
+        }
+
         private void ExitApp(object sender, EventArgs e)
         {
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)

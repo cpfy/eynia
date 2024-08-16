@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Input; // for ICommand
 
 
+using eynia.Views;
 
 namespace eynia.ViewModels
 {
@@ -14,6 +15,7 @@ namespace eynia.ViewModels
     {
 
         private TimeSpan TotalTime = TimeSpan.FromMinutes(1);
+        // private TimeSpan TotalTime = TimeSpan.FromSeconds(10);
 
 
         private CancellationTokenSource _cancellationTokenSource;
@@ -49,7 +51,11 @@ namespace eynia.ViewModels
             _cancellationTokenSource = new CancellationTokenSource();
             AddMinutesCommand = ReactiveCommand.Create<int>(AddMinutes);
             StartTimer(_cancellationTokenSource.Token);
+
+            _restWindow = new RestWindow();
         }
+
+        private RestWindow _restWindow;
 
         private async void StartTimer(CancellationToken token)
         {
@@ -62,6 +68,26 @@ namespace eynia.ViewModels
                 RemainingTime = RemainingTime.Subtract(TimeSpan.FromSeconds(1));
                 UpdateUI();
             }
+
+            if (RemainingTime <= TimeSpan.Zero)
+            {
+                await Dispatcher.UIThread.InvokeAsync(() =>
+                {
+                    var _restWindow = new RestWindow();
+                    _restWindow.Closed += RestWindow_Closed; // 订阅关闭事件
+                    _restWindow.Show();
+
+                });
+            }
+        }
+
+        private void RestWindow_Closed(object? sender, EventArgs e)
+        {
+            // 取消订阅事件:为了避免内存泄漏或不必要的事件订阅
+            _restWindow.Closed -= RestWindow_Closed;
+
+            // RestWindow 关闭时自动触发 ResetTimer 方法
+            ResetTimer();
         }
 
         private void AddMinutes(int minutes)
@@ -74,10 +100,19 @@ namespace eynia.ViewModels
             UpdateUI();
         }
 
+        public void ResetTimer()
+        {
+            RemainingTime = TotalTime;
+            UpdateUI();
+            StartTimer(_cancellationTokenSource.Token);
+        }
+
         private void UpdateUI()
         {
             RemainingTimeStr = RemainingTime.ToString(@"mm\:ss");
             RemainTimeBarValue = RemainingTime.TotalSeconds / TotalTime.TotalSeconds * 100;
+            // 由于progressbar UI显示不全，value再次归一化到[30,70]。估计因为minimum=100，此时width=height=40
+            RemainTimeBarValue = RemainTimeBarValue * 0.4 + 30;
         }
 
         public void CancelTimer()

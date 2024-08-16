@@ -29,6 +29,13 @@ namespace eynia.ViewModels
             set { this.RaiseAndSetIfChanged(ref _BreakLengthTime, value); }
         }
 
+        private bool _IsForceBreak = false;
+        public bool IsForceBreak
+        {
+            get { return _IsForceBreak; }
+            set { this.RaiseAndSetIfChanged(ref _IsForceBreak, value); }
+        }
+
         private string _ForceBreakType = "一般强制";
         public string ForceBreakType
         {
