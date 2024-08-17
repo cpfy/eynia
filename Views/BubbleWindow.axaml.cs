@@ -50,18 +50,5 @@ namespace eynia.Views
 
             base.OnUnloaded(e);
         }
-
-        protected override void OnClosed(EventArgs e)
-        {
-            base.OnClosed(e);
-            if(ViewModel != null){
-                ViewModel.CancelTimer();
-            }
-        }
-
-        public void ResetTimer()
-        {
-            ViewModel?.ResetTimer();
-        }
     }
 }

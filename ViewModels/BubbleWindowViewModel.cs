@@ -6,26 +6,33 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input; // for ICommand
 
-
+using eynia.Models;
 using eynia.Views;
+using Timer = eynia.Models.Timer;
 
 namespace eynia.ViewModels
 {
     public class BubbleWindowViewModel : ViewModelBase
     {
+        private Timer _timer;
 
-        private TimeSpan TotalTime = TimeSpan.FromMinutes(1);
-        // private TimeSpan TotalTime = TimeSpan.FromSeconds(10);
-
-
-        private CancellationTokenSource _cancellationTokenSource;
-
-        private TimeSpan _RemainingTime;
-        public TimeSpan RemainingTime
+        public BubbleWindowViewModel()
         {
-            get { return _RemainingTime; }
-            set { this.RaiseAndSetIfChanged(ref _RemainingTime, value); }
+            _timer = new Timer(TimeSpan.FromSeconds(10));
+            _timer.Tick += Timer_Tick;
+            _timer.Completed += (sender, e) => TimerFinished(); // 订阅 Timer 完成事件
+            // StartTimer();
+
+            _RemainingTimeStr = _timer.RemainingTimeStr;
+            _RemainTimeBarValue = _timer.RemainTimeBarValue;
+
+
+            AddMinutesCommand = ReactiveCommand.Create<int>(AddMinutes);
+
+            _restWindow = new RestWindow();
         }
+
+
 
         private string _RemainingTimeStr;
         public string RemainingTimeStr
@@ -44,41 +51,18 @@ namespace eynia.ViewModels
         public ICommand AddMinutesCommand { get; }
 
 
-        public BubbleWindowViewModel()
-        {
-            _RemainingTime = TotalTime;
-            _RemainingTimeStr = TotalTime.ToString(@"mm\:ss");
-            _cancellationTokenSource = new CancellationTokenSource();
-            AddMinutesCommand = ReactiveCommand.Create<int>(AddMinutes);
-            StartTimer(_cancellationTokenSource.Token);
-
-            _restWindow = new RestWindow();
-        }
-
         private RestWindow _restWindow;
 
-        private async void StartTimer(CancellationToken token)
+        private void Timer_Tick(object? sender, EventArgs e)
         {
-            while (RemainingTime > TimeSpan.Zero)
+
+            Dispatcher.UIThread.InvokeAsync(() =>
             {
-                await Task.Delay(1000, token);
-                if (token.IsCancellationRequested)
-                    break;
-
-                RemainingTime = RemainingTime.Subtract(TimeSpan.FromSeconds(1));
-                UpdateUI();
-            }
-
-            if (RemainingTime <= TimeSpan.Zero)
-            {
-                await Dispatcher.UIThread.InvokeAsync(() =>
-                {
-                    var _restWindow = new RestWindow();
-                    _restWindow.Closed += RestWindow_Closed; // 订阅关闭事件
-                    _restWindow.Show();
-
-                });
-            }
+                // Point centerPoint = GetWindowCenter();
+                // SetCursorPos((int)centerPoint.X, (int)centerPoint.Y);
+                RemainingTimeStr = _timer.RemainingTimeStr;
+                RemainTimeBarValue = _timer.RemainTimeBarValue;
+            });
         }
 
         private void RestWindow_Closed(object? sender, EventArgs e)
@@ -86,38 +70,26 @@ namespace eynia.ViewModels
             // 取消订阅事件:为了避免内存泄漏或不必要的事件订阅
             _restWindow.Closed -= RestWindow_Closed;
 
-            // RestWindow 关闭时自动触发 ResetTimer 方法
-            ResetTimer();
+            // RestWindow 关闭时触发 Timer Reset+Resume 方法
+            _timer.Reset();
+            _timer.Resume();
+        }
+
+        private void TimerFinished()
+        {
+            // 重置+暂停计时器
+            _timer.Reset();
+            _timer.Pause();
+
+            // 打开 RestWindow
+            var _restWindow = new RestWindow();
+            _restWindow.Closed += RestWindow_Closed; // 订阅关闭事件
+            _restWindow.Show();
         }
 
         private void AddMinutes(int minutes)
         {
-            RemainingTime += TimeSpan.FromMinutes(minutes);
-            if (RemainingTime > TotalTime)
-            {
-                RemainingTime = TotalTime;
-            }
-            UpdateUI();
-        }
-
-        public void ResetTimer()
-        {
-            RemainingTime = TotalTime;
-            UpdateUI();
-            StartTimer(_cancellationTokenSource.Token);
-        }
-
-        private void UpdateUI()
-        {
-            RemainingTimeStr = RemainingTime.ToString(@"mm\:ss");
-            RemainTimeBarValue = RemainingTime.TotalSeconds / TotalTime.TotalSeconds * 100;
-            // 由于progressbar UI显示不全，value再次归一化到[30,70]。估计因为minimum=100，此时width=height=40
-            RemainTimeBarValue = RemainTimeBarValue * 0.4 + 30;
-        }
-
-        public void CancelTimer()
-        {
-            _cancellationTokenSource.Cancel();
+            _timer.AddMinutes(minutes);
         }
     }
 }

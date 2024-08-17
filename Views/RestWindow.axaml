@@ -8,7 +8,7 @@
         x:DataType="vm:RestWindowViewModel"
         x:Class="eynia.Views.RestWindow"
         WindowState="Maximized"
-        Title="MAIN Window">
+        Title="REST Window">
 
     <Design.DataContext>
         <vm:RestWindowViewModel />

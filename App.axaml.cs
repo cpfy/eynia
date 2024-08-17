@@ -36,7 +36,7 @@ namespace eynia
             base.OnFrameworkInitializationCompleted();
         }
 
-                // 绑定system tray点击事件
+        // 绑定system tray点击事件
         private void OpenRestWindow(object sender, EventArgs e)
         {
             var restWindow = new RestWindow();

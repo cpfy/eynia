@@ -14,23 +14,32 @@ namespace eynia.Views
 {
     public partial class RestWindow : Window
     {
-        private RestWindowViewModel? ViewModel => DataContext as RestWindowViewModel;
+        private RestWindowViewModel? vm => DataContext as RestWindowViewModel;
         public RestWindow()
         {
             InitializeComponent();
             var vm = new RestWindowViewModel();
             DataContext = vm;
             vm.OnRequestClose += (sender, e) => Close();
+
+
+            // this.Opened += RestWindow_Opened;
+            // this.Closed += RestWindow_Closed;
         }
         private void InitializeComponent()
         {
             AvaloniaXamlLoader.Load(this);
         }
 
-        private void ExitWindows_Click(object? sender, RoutedEventArgs e)
-        {
-            Close();
-        }
+        // private void RestWindow_Opened(object? sender, EventArgs e)
+        // {
+        //     vm?.StartTimer();
+        // }
+
+        // private void RestWindow_Closed(object? sender, EventArgs e)
+        // {
+        //     vm?.StopTimer();
+        // }
 
         // 禁用键盘输入
         // protected override void OnKeyDown(KeyEventArgs e)
