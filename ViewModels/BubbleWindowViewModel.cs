@@ -82,6 +82,8 @@ namespace eynia.ViewModels
             // RestWindow 关闭时触发 Timer Reset+Resume 方法
             _timer.Reset();
             _timer.Resume();
+
+            _isRestWindowOpen = false;
         }
 
         private void TimerFinished()
