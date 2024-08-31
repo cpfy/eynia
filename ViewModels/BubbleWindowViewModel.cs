@@ -27,8 +27,13 @@ namespace eynia.ViewModels
             _RemainTimeBarValue = _timer.RemainTimeBarValue;
 
 
+            // init binding command
             AddMinutesCommand = ReactiveCommand.Create<int>(AddMinutes);
+            OpenSettingWindowCommand = ReactiveCommand.Create(OpenSettingWindow);
+            ImmRestCommand = ReactiveCommand.Create(TimerFinished);
+            ExitAppCommand = ReactiveCommand.Create(() => Environment.Exit(0));
 
+            // this field must contain a non-null value when exiting constructor
             _restWindow = new RestWindow();
         }
 
@@ -50,6 +55,9 @@ namespace eynia.ViewModels
 
         public ICommand AddMinutesCommand { get; }
 
+        public ICommand OpenSettingWindowCommand { get; }
+        public ICommand ImmRestCommand { get; }
+        public ICommand ExitAppCommand { get; }
 
         private RestWindow _restWindow;
         private bool _isRestWindowOpen = false; // 确保在计时器完成时只打开一个窗口
@@ -97,6 +105,12 @@ namespace eynia.ViewModels
         private void AddMinutes(int minutes)
         {
             _timer.AddMinutes(minutes);
+        }
+
+        private void OpenSettingWindow()
+        {
+            var settingWindow = new SettingWindow();
+            settingWindow.Show();
         }
     }
 }

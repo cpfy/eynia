@@ -1,6 +1,7 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:eynia.ViewModels"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         x:CompileBindings="True"
         x:DataType="vm:BubbleWindowViewModel"
         x:Class="eynia.Views.BubbleWindow"
@@ -18,11 +19,47 @@
         <vm:BubbleWindowViewModel/>
     </Design.DataContext>
 
+    <!-- 在Resourse中定义了一个MenuFlyout，用于在多个控件中共享右键菜单 -->
+    <Window.Resources>
+        <ContextMenu x:Key="SharedMenu">
+            <MenuItem Header="设置属性" Command="{Binding OpenSettingWindowCommand}"/>
+            <MenuItem Header="休息方案"/>
+            <Separator />
+            <MenuItem Header="推迟休息">
+                <ContextMenu>
+                    <MenuItem Header="3分钟" Command="{Binding AddMinutesCommand}">
+                        <MenuItem.CommandParameter>
+                            <sys:Int32>3</sys:Int32>
+                        </MenuItem.CommandParameter>
+                    </MenuItem>
+                    <MenuItem Header="5分钟" Command="{Binding AddMinutesCommand}">
+                        <MenuItem.CommandParameter>
+                            <sys:Int32>5</sys:Int32>
+                        </MenuItem.CommandParameter>
+                    </MenuItem>
+                    <MenuItem Header="8分钟" Command="{Binding AddMinutesCommand}">
+                        <MenuItem.CommandParameter>
+                            <sys:Int32>8</sys:Int32>
+                        </MenuItem.CommandParameter>
+                    </MenuItem>
+                </ContextMenu>
+            </MenuItem>
+            <MenuItem Header="立即休息" Command="{Binding ImmRestCommand}"/>
+            <Separator />
+            <MenuItem Header="退出" Command="{Binding ExitAppCommand}"/>
+        </ContextMenu>
+    </Window.Resources>
+
     <Border Name="Border" Width="80" Height="80" CornerRadius="10">
         <Grid>
             <!-- 在XAML中，元素的堆叠顺序是由它们在代码中出现的顺序决定的：后添加的元素会显示在前添加的元素之上 -->
             <ProgressBar Name="RemainTimeBar" Minimum="0" Maximum="100" Value="{Binding RemainTimeBarValue}" Height="80" Width="80" MaxWidth="80" Foreground="LightBlue"/>
             <TextBlock Name="TimeTextBlock" Text="{Binding RemainingTimeStr}" FontSize="22" VerticalAlignment="Center" HorizontalAlignment="Center"/>
         </Grid>
+
+        <!-- 为Border添加右键菜单 -->
+        <Border.ContextMenu>
+            <StaticResource ResourceKey="SharedMenu"/>
+        </Border.ContextMenu>
     </Border>
 </Window>
