@@ -52,6 +52,7 @@ namespace eynia.ViewModels
 
 
         private RestWindow _restWindow;
+        private bool _isRestWindowOpen = false; // 确保在计时器完成时只打开一个窗口
 
         private void Timer_Tick(object? sender, EventArgs e)
         {
@@ -77,6 +78,12 @@ namespace eynia.ViewModels
 
         private void TimerFinished()
         {
+            if (_isRestWindowOpen)
+            {
+                return;
+            }
+            _isRestWindowOpen = true;
+
             // 重置+暂停计时器
             _timer.Reset();
             _timer.Pause();

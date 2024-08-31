@@ -10,7 +10,7 @@ namespace eynia.Models
         private CancellationTokenSource _cts;
         private Task? _timerTask;
         private DateTime _startTime;
-        private TimeSpan _elapsedTime;
+        private TimeSpan _elapsedTime; // 已经过时间
         private bool _isPaused;
 
         public event EventHandler? Tick;
