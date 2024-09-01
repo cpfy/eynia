@@ -7,6 +7,7 @@
 
     <Application.Styles>
         <FluentTheme />
+        <StyleInclude Source="avares://eynia/Icons.axaml" />
     </Application.Styles>
 
     <TrayIcon.Icons>

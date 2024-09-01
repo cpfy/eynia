@@ -17,7 +17,6 @@ namespace eynia
     public partial class App : Application
     {
         public BubbleWindow? bubbleWindow { get; private set; }
-        // public ICommand AddMinutesCommand { get; } = ReactiveCommand.Create(AddMinutes);
 
         public override void Initialize()
         {
@@ -26,11 +25,25 @@ namespace eynia
 
         public override void OnFrameworkInitializationCompleted()
         {
+            // Create the AutoSuspendHelper.
+            // var suspension = new AutoSuspendHelper(ApplicationLifetime);
+            // RxApp.SuspensionHost.CreateNewAppState = () => new MainViewModel();
+            // RxApp.SuspensionHost.SetupDefaultSuspendResume(new NewtonsoftJsonSuspensionDriver("appstate.json"));
+            // suspension.OnFrameworkInitializationCompleted();
+
             // 设定启动时的窗口
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 bubbleWindow = new BubbleWindow();
                 desktop.MainWindow = bubbleWindow;
+
+                // 加载保存的 SettingWindowVM 状态
+                // var settingState = RxApp.SuspensionHost.GetAppState<SettingWindowViewModel>();
+
+                // var settingWindow = new SettingWindow
+                // {
+                //     DataContext = settingState
+                // };
             }
 
             base.OnFrameworkInitializationCompleted();
@@ -55,11 +68,6 @@ namespace eynia
             {
                 desktop.Shutdown();
             }
-            // var app = (Apps)Application.Current;
-            // if(app is IClassicDesktopStyleApplicationLifetime desktop){
-            //     desktop.Shutdown();
-            // }
-
         }
 
         private void AddMinutes(object sender, EventArgs e)

@@ -18,14 +18,14 @@ namespace eynia.ViewModels
 
         public BubbleWindowViewModel()
         {
-            _timer = new Timer(TimeSpan.FromSeconds(10));
+            // var interval = SettingWindowViewModel.Instance.BreakIntervalTime;
+            _timer = new Timer(TimeSpan.FromMinutes(35)); // 35
             _timer.Tick += Timer_Tick;
             _timer.Completed += (sender, e) => TimerFinished(); // 订阅 Timer 完成事件
-            // StartTimer();
 
+            // init binding fields
             _RemainingTimeStr = _timer.RemainingTimeStr;
             _RemainTimeBarValue = _timer.RemainTimeBarValue;
-
 
             // init binding command
             AddMinutesCommand = ReactiveCommand.Create<int>(AddMinutes);
