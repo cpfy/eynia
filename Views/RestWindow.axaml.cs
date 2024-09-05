@@ -5,6 +5,10 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Threading;  // for Dispatcher
 
 using System;
+using System.Diagnostics; // for Process
+using System.Runtime.InteropServices;
+
+// public static KeyboardHook kh;
 
 using DragDemo;
 
@@ -15,6 +19,9 @@ namespace eynia.Views
     public partial class RestWindow : Window
     {
         private RestWindowViewModel? vm => DataContext as RestWindowViewModel;
+
+        private KeyboardHook _keyboardHook;
+
         public RestWindow()
         {
             InitializeComponent();
@@ -22,36 +29,54 @@ namespace eynia.Views
             DataContext = vm;
             vm.OnRequestClose += (sender, e) => Close();
 
+            // fullscreen
+            // this.WindowState = WindowState.FullScreen;
 
-            // this.Opened += RestWindow_Opened;
-            // this.Closed += RestWindow_Closed;
+
+            // 禁用键盘输入: 不可在实例化时启用 KeyboardHook！因为bubble启动时已经实例化，仅在OnOpened窗口打开时启用
+            // _keyboardHook = new KeyboardHook();
+            // _keyboardHook.KeyIntercepted += OnKeyIntercepted;
         }
         private void InitializeComponent()
         {
             AvaloniaXamlLoader.Load(this);
         }
 
-        // private void RestWindow_Opened(object? sender, EventArgs e)
-        // {
-        //     vm?.StartTimer();
-        // }
+        // 处理键盘拦截事件
+        private void OnKeyIntercepted(KeyboardHookEventArgs e)
+        {
+            // 检查是否按下了左侧或右侧的 Windows 键
+            if (e.KeyCode == Key.LWin || e.KeyCode == Key.RWin)
+            {
+                // 阻止 Windows 键事件传递给系统
+                e.PassThrough = false;
+            }
 
-        // private void RestWindow_Closed(object? sender, EventArgs e)
-        // {
-        //     vm?.StopTimer();
-        // }
+            // 你可以在这里添加更多的键盘处理逻辑
+        }
 
-        // 禁用键盘输入
-        // protected override void OnKeyDown(KeyEventArgs e)
-        // {
-        //     e.Handled = true;
-        //     base.OnKeyDown(e);
-        // }
+        // 仅在窗口打开时启用 KeyboardHook
+        protected override void OnOpened(EventArgs e)
+        {
+            base.OnOpened(e);
 
-        // protected override void OnKeyUp(KeyEventArgs e)
-        // {
-        //     e.Handled = true;
-        //     base.OnKeyUp(e);
-        // }
+            if (OperatingSystem.IsWindows()) // 仅在 Windows 平台上启用 KeyboardHook
+            {
+                _keyboardHook = new KeyboardHook();
+                _keyboardHook.KeyIntercepted += OnKeyIntercepted;
+            }
+        }
+
+        // 确保在窗口关闭时释放钩子
+        protected override void OnClosed(EventArgs e)
+        {
+            if (OperatingSystem.IsWindows()) // 仅在 Windows 平台上禁用 KeyboardHook
+            {
+                _keyboardHook.Dispose();
+                _keyboardHook = null;
+            }
+
+            base.OnClosed(e);
+        }
     }
 }

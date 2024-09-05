@@ -7,12 +7,14 @@
         x:CompileBindings="True"
         x:DataType="vm:RestWindowViewModel"
         x:Class="eynia.Views.RestWindow"
-        WindowState="Maximized"
-        Title="REST Window">
+        WindowState="FullScreen"
+        Title="RESTing...">
 
     <Design.DataContext>
         <vm:RestWindowViewModel />
     </Design.DataContext>
+
+
 
     <Grid>
         <!-- 定义两行和两列，分别用于TextBlock和Button -->
@@ -44,7 +46,9 @@
             HorizontalAlignment="Right"
             VerticalAlignment="Bottom"
             Margin="0, 0, 10, 10"
-            Command="{Binding ExitCommand}" />
+            Command="{Binding ExitCommand}">
+            <PathIcon Data="{StaticResource unlock_regular}" />
+        </Button>
     </Grid>
 
 </Window>
