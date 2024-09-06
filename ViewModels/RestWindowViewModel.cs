@@ -6,6 +6,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input; // for ICommand
 
+using Avalonia.Input; // for keyeventargs
+
 
 using eynia.Models;
 using eynia.Views;
@@ -25,12 +27,17 @@ namespace eynia.ViewModels
         {
             _timer = new Timer(TimeSpan.FromMinutes(5));
             _timer.Tick += Timer_Tick;
-            _timer.Completed += (sender, e) => ExitWindow(); // 订阅 Timer 完成事件：当 _timer 的 Completed 事件被触发时，忽略事件提供的 sender 和 e 参数，直接调用 ExitWindow() 方法
+
+            // 订阅 Timer 完成事件：当 _timer 的 Completed 事件被触发时，忽略事件提供的 sender 和 e 参数，直接调用 ExitWindow() 方法
+            _timer.Completed += (sender, e) => ExitWindow();
             // StartTimer();
 
             _RemainingTimeStr = _timer.RemainingTimeStr;
 
-            ExitCommand = ReactiveCommand.Create(ExitWindow);
+            // Unlock Button 可见性
+            // this.KeyDown += OnKeyDown;
+            // KeyPressCommand = ReactiveCommand.Create<KeyEventArgs>(OnKeyDown);
+            UnlockCommand = ReactiveCommand.Create(ExitWindow);
         }
         public void StartTimer()
         {
@@ -47,8 +54,6 @@ namespace eynia.ViewModels
 
             Dispatcher.UIThread.InvokeAsync(() =>
             {
-                // Point centerPoint = GetWindowCenter();
-                // SetCursorPos((int)centerPoint.X, (int)centerPoint.Y);
                 RemainingTimeStr = _timer.RemainingTimeStr;
             });
         }
@@ -65,12 +70,83 @@ namespace eynia.ViewModels
         // 在vm中Close窗口
         public event EventHandler? OnRequestClose;
 
-        public ICommand ExitCommand { get; }
-        private void ExitWindow()
+        public ICommand UnlockCommand { get; }
+        private async void ExitWindow()
         {
             if(OnRequestClose != null){
                 OnRequestClose(this, new EventArgs());
             }
+            // var passwordDialog = new PasswordDialog();
+            // await passwordDialog.ShowDialog();
+
+            // // 校验password
+            // if (passwordDialog.Password == "885988")
+            // {
+            //     // Pass! Close the window
+            //     if(OnRequestClose != null){
+            //         OnRequestClose(this, new EventArgs());
+            //     }
+            // }
+            // else
+            // {
+            //     // Show an error message or handle incorrect password
+            //     var messageBox = MessageBox.Avalonia.MessageBoxManager
+            //         .GetMessageBoxStandardWindow("Error", "Incorrect password");
+            //     await messageBox.ShowDialog(this);
+            // }
         }
+
+
+        // 控制Button Visible状态
+        private bool _CanUnlock = false;
+        public bool CanUnlock
+        {
+            get { return _CanUnlock; }
+            set { this.RaiseAndSetIfChanged(ref _CanUnlock, value); }
+        }
+
+        public void ChangeUnlockBtnState(){
+            CanUnlock = !CanUnlock;
+        }
+
+        // 不可！Keyboard好像被ban了
+        // private string _currentInput = string.Empty;
+
+        //  public ICommand KeyPressCommand { get; }
+
+        // private void OnKeyDown(object sender, KeyEventArgs e)
+        // {
+        //     // Convert Key to char
+        //     char keyChar = KeyToChar(e.Key);
+        //     if (keyChar != '\0')
+        //     {
+        //         _currentInput += keyChar;
+
+        //         // Check if the current input matches "magic"
+        //         if (_currentInput.EndsWith("magic"))
+        //         {
+        //             CanUnlock = !CanUnlock; // Toggle the boolean state
+        //             _currentInput = string.Empty; // Reset the input
+        //         }
+        //         else if (_currentInput.Length > 5)
+        //         {
+        //             // Keep the input length manageable
+        //             _currentInput = _currentInput.Substring(_currentInput.Length - 5);
+        //         }
+        //     }
+        // }
+
+        // private char KeyToChar(Key key)
+        // {
+        //     // Simple conversion from Key to char
+        //     // This can be expanded to handle more keys and modifiers
+        //     if (key >= Key.A && key <= Key.Z)
+        //     {
+        //         return (char)('a' + (key - Key.A));
+        //     }
+        //     return '\0';
+        // }
+
+
     }
 }

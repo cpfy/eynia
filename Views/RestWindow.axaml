@@ -10,6 +10,8 @@
         WindowState="FullScreen"
         Title="RESTing...">
 
+        <!-- WindowState="FullScreen" -->
+
     <Design.DataContext>
         <vm:RestWindowViewModel />
     </Design.DataContext>
@@ -46,7 +48,8 @@
             HorizontalAlignment="Right"
             VerticalAlignment="Bottom"
             Margin="0, 0, 10, 10"
-            Command="{Binding ExitCommand}">
+            IsVisible="{Binding CanUnlock}"
+            Command="{Binding UnlockCommand}">
             <PathIcon Data="{StaticResource unlock_regular}" />
         </Button>
     </Grid>

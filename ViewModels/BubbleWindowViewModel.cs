@@ -19,6 +19,7 @@ namespace eynia.ViewModels
         public BubbleWindowViewModel()
         {
             // var interval = SettingWindowViewModel.Instance.BreakIntervalTime;
+            // _timer = new Timer(TimeSpan.FromSeconds(10));  // Test & Debug
             _timer = new Timer(TimeSpan.FromMinutes(35)); // 35
             _timer.Tick += Timer_Tick;
             _timer.Completed += (sender, e) => TimerFinished(); // 订阅 Timer 完成事件
