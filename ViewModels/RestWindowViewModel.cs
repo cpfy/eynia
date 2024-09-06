@@ -71,7 +71,7 @@ namespace eynia.ViewModels
         public event EventHandler? OnRequestClose;
 
         public ICommand UnlockCommand { get; }
-        private async void ExitWindow()
+        private void ExitWindow()
         {
             if(OnRequestClose != null){
                 OnRequestClose(this, new EventArgs());

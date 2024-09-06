@@ -26,6 +26,11 @@ public class NewtonsoftJsonSuspensionDriver : ISuspensionDriver
     {
         var lines = File.ReadAllText(_file);
         var state = JsonConvert.DeserializeObject<object>(lines, _settings);
+        if (state == null)
+        {
+            // 处理null值的情况，可以抛出异常或者返回一个默认值
+            throw new InvalidOperationException("Deserialized state is null");
+        }
         return Observable.Return(state);
     }
 

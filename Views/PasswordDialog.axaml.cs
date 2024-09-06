@@ -6,7 +6,7 @@ namespace eynia
 {
     public partial class PasswordDialog : Window
     {
-        public string Password { get; private set; }
+        public string? Password { get; private set; }
 
         public PasswordDialog()
         {

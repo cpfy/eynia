@@ -10,9 +10,9 @@ public class KeyboardHook : IDisposable
     private const int WM_KEYUP = 0x0101;
 
     private IntPtr _hookID = IntPtr.Zero;
-    private LowLevelKeyboardProc _proc;
+    private LowLevelKeyboardProc? _proc;
 
-    public event KeyboardHookEventHandler KeyIntercepted;
+    public event KeyboardHookEventHandler? KeyIntercepted;
 
     public KeyboardHook()
     {
@@ -25,10 +25,14 @@ public class KeyboardHook : IDisposable
 
     private IntPtr SetHook(LowLevelKeyboardProc proc)
     {
-        using (Process curProcess = Process.GetCurrentProcess())
+        Process curProcess = Process.GetCurrentProcess();
+        if(curProcess.MainModule == null)
+        {
+            return IntPtr.Zero;
+        }
         using (ProcessModule curModule = curProcess.MainModule)
         {
-            return SetWindowsHookEx(WH_KEYBOARD_LL, proc, GetModuleHandle(curModule.ModuleName), 0);
+            return SetWindowsHookEx(WH_KEYBOARD_LL, proc, GetModuleHandle(curModule?.ModuleName ?? string.Empty), 0);
         }
     }
 

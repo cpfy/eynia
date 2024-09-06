@@ -22,7 +22,7 @@ namespace eynia.Views
     {
         private RestWindowViewModel? vm => DataContext as RestWindowViewModel;
 
-        private KeyboardHook _keyboardHook;
+        private KeyboardHook? _keyboardHook;
 
         public RestWindow()
         {
@@ -78,7 +78,7 @@ namespace eynia.Views
         // 确保在窗口关闭时释放钩子
         protected override void OnClosed(EventArgs e)
         {
-            if (OperatingSystem.IsWindows()) // 仅在 Windows 平台上禁用 KeyboardHook
+            if (OperatingSystem.IsWindows() && _keyboardHook != null) // 仅在 Windows 平台上禁用 KeyboardHook
             {
                 _keyboardHook.Dispose();
                 _keyboardHook = null;
@@ -92,7 +92,7 @@ namespace eynia.Views
         private Queue<string> _inputSequence = new Queue<string>();
         private readonly string[] _targetSequence = { "LeftClick", "RightClick", "LeftClick", "RightClick", "Scroll" }; // 暗号序列
 
-        private void OnPointerPressed(object sender, PointerPressedEventArgs e)
+        private void OnPointerPressed(object? sender, PointerPressedEventArgs e)
         {
             if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
             {
@@ -104,7 +104,7 @@ namespace eynia.Views
             }
         }
 
-        private void OnPointerWheelChanged(object sender, PointerWheelEventArgs e)
+        private void OnPointerWheelChanged(object? sender, PointerWheelEventArgs e)
         {
             AddInput("Scroll");
         }
@@ -146,7 +146,5 @@ namespace eynia.Views
             // 暗号match后的处理逻辑
             vm?.ChangeUnlockBtnState();
         }
-
-
     }
 }
