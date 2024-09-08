@@ -13,7 +13,7 @@ namespace eynia.Views
 {
     public partial class BubbleWindow : Window
     {
-        private BubbleWindowViewModel? ViewModel => DataContext as BubbleWindowViewModel;
+        private BubbleWindowViewModel? vm => DataContext as BubbleWindowViewModel;
 
         // 无参数构造函数,给xaml用
         public BubbleWindow() : this(new())  // new() 相当于null
@@ -54,6 +54,12 @@ namespace eynia.Views
             }
 
             base.OnUnloaded(e);
+        }
+
+        // 从App.xaml.cs传递一个函数到vm
+        public void AddMinutes(int minutes)
+        {
+            vm?.AddMinutes(minutes);
         }
     }
 }

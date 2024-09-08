@@ -23,12 +23,10 @@
                 <NativeMenuItem Header="休息方案" />
                 <NativeMenuItem Header="推迟休息">
                     <NativeMenu>
-                    <!-- <NativeMenuItem Header="3分钟" Click="DelayRest" Command="{Binding AddMinutesCommand}" />
-                    <NativeMenuItem Header="5分钟" Click="DelayRest" Command="{Binding AddMinutesCommand}" />
-                    <NativeMenuItem Header="8分钟" Click="DelayRest" Command="{Binding AddMinutesCommand}" /> -->
-                    <NativeMenuItem Header="3分钟" />
-                    <NativeMenuItem Header="5分钟" />
-                    <NativeMenuItem Header="8分钟" />
+                    <!-- 此处用binding形如反而会报错 Command="{Binding AddMinutesCommand}" /> -->
+                    <NativeMenuItem Header="3分钟" Click="DelayRest"/>
+                    <NativeMenuItem Header="5分钟" Click="DelayRest"/>
+                    <NativeMenuItem Header="8分钟" Click="DelayRest"/>
                     </NativeMenu>
                 </NativeMenuItem>
                 <NativeMenuItem Header="立即休息" Click="OpenRestWindow" />

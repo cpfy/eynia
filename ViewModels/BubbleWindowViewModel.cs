@@ -107,7 +107,7 @@ namespace eynia.ViewModels
             _restWindow.Show();
         }
 
-        private void AddMinutes(int minutes)
+        public void AddMinutes(int minutes)
         {
             _timer.AddMinutes(minutes);
         }

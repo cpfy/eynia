@@ -85,27 +85,18 @@ namespace eynia
                 desktop.Shutdown();
             }
         }
-
-        private void AddMinutes(object sender, EventArgs e)
-        {
-            // if (bubbleWindow != null)
-            // {
-            //     bubbleWindow.AddMinutes(5);
-            // }
-        }
         private void DelayRest(object sender, EventArgs e)
         {
-            var menuItem = sender as NativeMenuItem;
-            if (menuItem != null)
+            // 也可：var menuItem = sender as NativeMenuItem;
+            if (sender is NativeMenuItem menuItem)
             {
                 string header = menuItem.Header!.ToString(); // 格式形如：x分钟。使用空条件运算符
                 int delayminutes = int.Parse(header[0].ToString()); // 将第一个字符转换为字符串再解析为 int
-                // bubbleWindow.AddMinutes(delayminutes);
 
-                // if (DataContext is BubbleWindowViewModel viewModel)
-                // {
-                //     viewModel.AddMinutes(delayminutes);
-                // }
+                if (bubbleWindow != null)
+                {
+                    bubbleWindow.AddMinutes(delayminutes);
+                }
             }
         }
     }
