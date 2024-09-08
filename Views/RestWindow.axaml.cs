@@ -10,8 +10,6 @@ using System.Collections.Generic; // for Queue
 using System.Diagnostics; // for Process
 using System.Runtime.InteropServices;
 
-// public static KeyboardHook kh;
-
 using DragDemo;
 
 using eynia.ViewModels;
@@ -21,7 +19,6 @@ namespace eynia.Views
     public partial class RestWindow : Window
     {
         private RestWindowViewModel? vm => DataContext as RestWindowViewModel;
-
         private KeyboardHook? _keyboardHook;
 
         public RestWindow()
@@ -59,6 +56,15 @@ namespace eynia.Views
                 // 阻止 Windows 键事件传递给系统
                 e.PassThrough = false;
             }
+
+            // 检查是否按下了 Alt+Tab 组合键
+            // if (e.KeyCode == Key.Tab && (IsKeyDown(Key.LeftAlt) || IsKeyDown(Key.RightAlt)))
+            // fail!
+            // if (e.KeyCode == Key.Tab)
+            // {
+            //     // 阻止 Alt+Tab 事件传递给系统
+            //     e.PassThrough = false;
+            // }
 
             // 你可以在这里添加更多的键盘处理逻辑
         }

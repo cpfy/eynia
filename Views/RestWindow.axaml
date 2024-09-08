@@ -8,6 +8,7 @@
         x:DataType="vm:RestWindowViewModel"
         x:Class="eynia.Views.RestWindow"
         WindowState="FullScreen"
+        Topmost="True"
         Title="RESTing...">
 
         <!-- WindowState="FullScreen" -->
