@@ -107,6 +107,7 @@ public class KeyboardHook : IDisposable
 
             // TODO
             // if (AllowAltTab && key == Key.Tab && (Keyboard.IsKeyDown(Key.LeftAlt) || KeyboardDevice.IsKeyDown(Key.RightAlt)))
+            if(AllowAltTab){}
             // {
             //     allowKey = true;
             // }

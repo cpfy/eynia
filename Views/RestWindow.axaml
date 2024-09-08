@@ -3,6 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="using:eynia.ViewModels"
+        xmlns:conv="using:eynia.Converter"
         mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="300"
         x:CompileBindings="True"
         x:DataType="vm:RestWindowViewModel"
@@ -12,6 +13,13 @@
         Title="RESTing...">
 
         <!-- WindowState="FullScreen" -->
+
+    <Window.Resources>
+        <!-- Remember to add the needed namespace "conv" -->
+        <conv:BooleanToOpacityConverter x:Key="BooleanToOpacityConverter" />
+        <!--  This Resource will be used as our ConverterParameter  -->
+        <!-- <x:Boolean x:Key="OpacityParameter" /> -->
+    </Window.Resources>
 
     <Design.DataContext>
         <vm:RestWindowViewModel />
@@ -49,7 +57,8 @@
             HorizontalAlignment="Right"
             VerticalAlignment="Bottom"
             Margin="0, 0, 10, 10"
-            IsVisible="{Binding CanUnlock}"
+            IsEnabled="{Binding CanUnlock}"
+            Opacity="{Binding CanUnlock, Converter={StaticResource BooleanToOpacityConverter}}"
             Command="{Binding UnlockCommand}">
             <PathIcon Data="{StaticResource unlock_regular}" />
         </Button>
