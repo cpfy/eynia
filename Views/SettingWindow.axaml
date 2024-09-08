@@ -28,41 +28,47 @@
 
             <!-- 播放提示 -->
             <CheckBox Name="{Binding IsAllowShowAlert}" Content="是否播放提示（默认休息前1分钟）" Margin="5"/>
-            <!-- <Grid ColumnDefinitions="Auto, Auto" RowDefinitions="Auto">
-                <TextBlock Grid.Row="0" Grid.Column="0" Text="休息前多久播放:" VerticalAlignment="Center" Margin="5"/>
-                <ComboBox Grid.Row="0" Grid.Column="1" ItemsSource="{Binding AvailableForceBreakTypes}"
+            <!-- <StackPanel Orientation="Horizontal">
+                <TextBlock Text="休息前多久播放:" VerticalAlignment="Center" Margin="5"/>
+                <ComboBox ItemsSource="{Binding AvailableForceBreakTypes}"
                     SelectedItem="{Binding ForceBreakType}" VerticalAlignment="Center" Margin="5"/>
-            </Grid> -->
+            </StackPanel> -->
 
             <!-- 是否强制休息 -->
             <CheckBox Name="{Binding IsForceBreak}" Content="是否强制休息" Margin="5"/>
 
             <!-- 强制休息类型（不手动设置ComboBoxItem，在MVVM中绑定） -->
-            <Grid ColumnDefinitions="Auto, Auto" RowDefinitions="Auto">
-                <TextBlock Grid.Row="0" Grid.Column="0" Text="强制休息类型:" VerticalAlignment="Center" Margin="5"/>
-                <ComboBox Grid.Row="0" Grid.Column="1" ItemsSource="{Binding AvailableForceBreakTypes}"
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="强制休息类型:" VerticalAlignment="Center" Margin="5"/>
+                <ComboBox ItemsSource="{Binding AvailableForceBreakTypes}"
                     SelectedItem="{Binding ForceBreakType}" VerticalAlignment="Center" Margin="5"/>
-            </Grid>
+            </StackPanel>
 
             <!-- 是否允许推迟 -->
             <CheckBox Name="{Binding IsAllowPostpone}" Content="是否允许推迟" Margin="5"/>
 
             <!-- 推迟次数 -->
-            <Grid ColumnDefinitions="Auto, Auto" RowDefinitions="Auto">
-                <TextBlock Grid.Row="0" Grid.Column="0" Text="推迟次数:" VerticalAlignment="Center" Margin="5"/>
-                <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding PostponeCount}" VerticalAlignment="Center" Margin="5"/>
-            </Grid>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="推迟次数:" VerticalAlignment="Center" Margin="5"/>
+                <TextBox Text="{Binding PostponeCount}" VerticalAlignment="Center" Margin="5"/>
+            </StackPanel>
 
-            <!-- 保存/取消按钮 -->
-            <Button Content="保存" Margin="5" HorizontalAlignment="Left" Command="{Binding SaveConfigCommand}">
-                <!-- <PathIcon Data="{StaticResource save_regular}" /> -->
+            <!-- 重置/保存按钮 -->
+            <StackPanel Margin="8" Orientation="Horizontal">
+                <Button Margin="5" HorizontalAlignment="Left" Command="{Binding ResetConfigCommand}">
+                    <StackPanel Orientation="Horizontal">
+                        <PathIcon Data="{StaticResource edit_off_regular}" Width="16" Height="16" Margin="0,0,5,0"/>
+                        <TextBlock Text="重置" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+                <Button Margin="5" HorizontalAlignment="Left" Command="{Binding SaveConfigCommand}">
+                    <StackPanel Orientation="Horizontal">
+                        <PathIcon Data="{StaticResource save_regular}" Width="16" Height="16" Margin="0,0,5,0"/>
+                        <TextBlock Text="保存" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
 
-                <StackPanel Orientation="Horizontal">
-                    <PathIcon Data="{StaticResource save_regular}" Width="16" Height="16" Margin="0,0,5,0"/>
-                    <TextBlock Text="保存" VerticalAlignment="Center"/>
-                </StackPanel>
-            </Button>
-            <!-- <Button Content="取消" Margin="5" HorizontalAlignment="Center" Command="{Binding CancelConfigCommand}"/> -->
         </StackPanel>
         </TabItem>
 

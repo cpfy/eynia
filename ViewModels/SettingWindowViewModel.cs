@@ -15,25 +15,20 @@ namespace eynia.ViewModels
         {
             this._userConfig = userConfig;
             SaveConfigCommand = ReactiveCommand.Create(SaveConfig);
+            ResetConfigCommand = ReactiveCommand.Create(ResetConfig);
 
             // init fields from userConfig
-            _BreakIntervalTime = userConfig.BreakIntervalTime;
-            _BreakLengthTime = userConfig.BreakLengthTime;
-            _IsForceBreak = userConfig.IsForceBreak;
-            _ForceBreakType = userConfig.ForceBreakType;
-            _PostponeCount = userConfig.PostponeCount;
-            _IsAllowPostpone = userConfig.IsAllowPostpone;
-            _IsAllowShowAlert = userConfig.IsAllowShowAlert;
+            ResetConfig();
         }
 
-        private decimal? _BreakIntervalTime = 45;
+        private decimal? _BreakIntervalTime;
         public decimal? BreakIntervalTime
         {
             get { return _BreakIntervalTime; }
             set { this.RaiseAndSetIfChanged(ref _BreakIntervalTime, value); }
         }
 
-        private decimal? _BreakLengthTime = 5;
+        private decimal? _BreakLengthTime;
         public decimal? BreakLengthTime
         {
             get { return _BreakLengthTime; }
@@ -59,7 +54,7 @@ namespace eynia.ViewModels
             "一般强制", "完全强制"
         };
 
-        private decimal? _PostponeCount = 3;
+        private decimal? _PostponeCount;
         public decimal? PostponeCount
         {
             get { return _PostponeCount; }
@@ -103,6 +98,7 @@ namespace eynia.ViewModels
         }
 
         public ICommand SaveConfigCommand { get; }
+        public ICommand ResetConfigCommand { get; }
         private void SaveConfig()
         {
             _userConfig.BreakIntervalTime = BreakIntervalTime ?? 45;
@@ -119,6 +115,19 @@ namespace eynia.ViewModels
             // _userConfig.IsAllowAutoDownloadUpdate = IsAllowAutoDownloadUpdate;
 
             //TODO _userConfig.SaveConfig();
+        }
+
+        private void ResetConfig()
+        {
+            // 用初始化时的参数再load一遍。既是init、也是reload
+            // 如果直接赋值/设置私有字段（如 _BreakIntervalTime、_BreakLengthTime 等），而没有通过属性的 set 方法。这意味着 RaiseAndSetIfChanged 没有被调用，因此不会触发属性变更通知，导致视图没有更新
+            BreakIntervalTime = _userConfig.BreakIntervalTime;
+            BreakLengthTime = _userConfig.BreakLengthTime;
+            IsForceBreak = _userConfig.IsForceBreak;
+            ForceBreakType = _userConfig.ForceBreakType;
+            PostponeCount = _userConfig.PostponeCount;
+            IsAllowPostpone = _userConfig.IsAllowPostpone;
+            IsAllowShowAlert = _userConfig.IsAllowShowAlert;
         }
     }
 }
