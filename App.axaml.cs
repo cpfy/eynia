@@ -16,54 +16,70 @@ namespace eynia
 {
     public partial class App : Application
     {
+        // main window
         public BubbleWindow? bubbleWindow { get; private set; }
+
+        // user config
+        private UserConfigService? _userConfigService;
+        private UserConfig? _userConfig;
 
         public override void Initialize()
         {
             AvaloniaXamlLoader.Load(this);
         }
 
+        // Initialize后执行
         public override void OnFrameworkInitializationCompleted()
         {
-            // Create the AutoSuspendHelper.
-            // var suspension = new AutoSuspendHelper(ApplicationLifetime);
-            // RxApp.SuspensionHost.CreateNewAppState = () => new MainViewModel();
-            // RxApp.SuspensionHost.SetupDefaultSuspendResume(new NewtonsoftJsonSuspensionDriver("appstate.json"));
-            // suspension.OnFrameworkInitializationCompleted();
+            // 加载配置数据并初始化 UserConfig
+            _userConfigService = new UserConfigService();
+            var data = _userConfigService.LoadConfig();
+            _userConfig = new UserConfig();
+            _userConfig.LoadFromDictionary(data);
 
             // 设定启动时的窗口
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                bubbleWindow = new BubbleWindow();
+                bubbleWindow = new BubbleWindow(_userConfig);
                 desktop.MainWindow = bubbleWindow;
-
-                // 加载保存的 SettingWindowVM 状态
-                // var settingState = RxApp.SuspensionHost.GetAppState<SettingWindowViewModel>();
-
-                // var settingWindow = new SettingWindow
-                // {
-                //     DataContext = settingState
-                // };
             }
 
             base.OnFrameworkInitializationCompleted();
         }
 
+        // 保存配置数据
+        private void SaveConfigData()
+        {
+            if(_userConfig == null || _userConfigService == null)
+                return;
+
+            var data = _userConfig.SaveToDictionary();
+            _userConfigService.SaveConfig(data);
+        }
+
         // 绑定system tray点击事件
         private void OpenRestWindow(object sender, EventArgs e)
         {
-            var restWindow = new RestWindow();
+            if(_userConfig == null)
+                return;
+
+            //TODO: 少了暂停BubbleWindow的逻辑
+            var restWindow = new RestWindow(_userConfig);
             restWindow.Show();
         }
 
         private void OpenSettingWindow(object sender, EventArgs e)
         {
-            var settingWindow = new SettingWindow();
+            if(_userConfig == null)
+                return;
+
+            var settingWindow = new SettingWindow(_userConfig);
             settingWindow.Show();
         }
 
         private void ExitApp(object sender, EventArgs e)
         {
+            SaveConfigData();
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 desktop.Shutdown();

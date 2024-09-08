@@ -23,9 +23,10 @@ namespace eynia.ViewModels
     {
         private Timer _timer;
 
-        public RestWindowViewModel()
+        public RestWindowViewModel(UserConfig userConfig)
         {
-            _timer = new Timer(TimeSpan.FromMinutes(5));
+            int t_rest = (int)userConfig.BreakLengthTime;  // default:5
+            _timer = new Timer(TimeSpan.FromMinutes(t_rest));
             _timer.Tick += Timer_Tick;
 
             // 订阅 Timer 完成事件：当 _timer 的 Completed 事件被触发时，忽略事件提供的 sender 和 e 参数，直接调用 ExitWindow() 方法

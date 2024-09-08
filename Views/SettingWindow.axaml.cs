@@ -9,10 +9,14 @@ namespace eynia.Views
     public partial class SettingWindow : Window
     {
         private SettingWindowViewModel? ViewModel => DataContext as SettingWindowViewModel;
-        public SettingWindow()
+
+        public SettingWindow() : this(new())  // new() 相当于null
+        {
+        }
+        public SettingWindow(UserConfig userConfig)
         {
             InitializeComponent();
-            DataContext = new SettingWindowViewModel();
+            DataContext = new SettingWindowViewModel(userConfig);
         }
 
         private void InitializeComponent()

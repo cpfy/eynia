@@ -5,7 +5,7 @@
         x:DataType="vm:SettingWindowViewModel"
         x:Class="eynia.Views.SettingWindow"
         Title="设置"
-        Width="800" Height="550"
+        Width="640" Height="440"
         Icon="/Assets/eynia.ico">
 
     <Design.DataContext>
@@ -55,7 +55,12 @@
 
             <!-- 保存/取消按钮 -->
             <Button Content="保存" Margin="5" HorizontalAlignment="Left" Command="{Binding SaveConfigCommand}">
-                <PathIcon Data="{StaticResource save_regular}" />
+                <!-- <PathIcon Data="{StaticResource save_regular}" /> -->
+
+                <StackPanel Orientation="Horizontal">
+                    <PathIcon Data="{StaticResource save_regular}" Width="16" Height="16" Margin="0,0,5,0"/>
+                    <TextBlock Text="保存" VerticalAlignment="Center"/>
+                </StackPanel>
             </Button>
             <!-- <Button Content="取消" Margin="5" HorizontalAlignment="Center" Command="{Binding CancelConfigCommand}"/> -->
         </StackPanel>

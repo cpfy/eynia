@@ -21,10 +21,13 @@ namespace eynia.Views
         private RestWindowViewModel? vm => DataContext as RestWindowViewModel;
         private KeyboardHook? _keyboardHook;
 
-        public RestWindow()
+        public RestWindow() : this(new())  // new() 相当于null
+        {
+        }
+        public RestWindow(UserConfig userConfig)
         {
             InitializeComponent();
-            var vm = new RestWindowViewModel();
+            var vm = new RestWindowViewModel(userConfig);
             DataContext = vm;
             vm.OnRequestClose += (sender, e) => Close();
 

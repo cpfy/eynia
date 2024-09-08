@@ -9,20 +9,23 @@ namespace eynia.ViewModels
 {
     public class SettingWindowViewModel : ViewModelBase
     {
+        private UserConfig _userConfig;
 
-        // save&load configs
-        private readonly NewtonsoftJsonSuspensionDriver _suspensionDriver;
-
-        public SettingWindowViewModel()
+        public SettingWindowViewModel(UserConfig userConfig)
         {
+            this._userConfig = userConfig;
             SaveConfigCommand = ReactiveCommand.Create(SaveConfig);
 
-            // Load config from file
-            _suspensionDriver = new NewtonsoftJsonSuspensionDriver("user_setting.json");
-            LoadState();
+            // init fields from userConfig
+            _BreakIntervalTime = userConfig.BreakIntervalTime;
+            _BreakLengthTime = userConfig.BreakLengthTime;
+            _IsForceBreak = userConfig.IsForceBreak;
+            _ForceBreakType = userConfig.ForceBreakType;
+            _PostponeCount = userConfig.PostponeCount;
+            _IsAllowPostpone = userConfig.IsAllowPostpone;
+            _IsAllowShowAlert = userConfig.IsAllowShowAlert;
         }
 
-        // [DataMember]
         private decimal? _BreakIntervalTime = 45;
         public decimal? BreakIntervalTime
         {
@@ -102,20 +105,20 @@ namespace eynia.ViewModels
         public ICommand SaveConfigCommand { get; }
         private void SaveConfig()
         {
-            // Save config to file
-            //  _suspensionDriver.SaveState(this).Subscribe();
-        }
+            _userConfig.BreakIntervalTime = BreakIntervalTime ?? 45;
+            _userConfig.BreakLengthTime = BreakLengthTime ?? 5;
+            _userConfig.IsForceBreak = IsForceBreak;
+            _userConfig.ForceBreakType = ForceBreakType;
+            _userConfig.PostponeCount = PostponeCount ?? 3;
+            _userConfig.IsAllowPostpone = IsAllowPostpone;
+            _userConfig.IsAllowShowAlert = IsAllowShowAlert;
 
-        public void LoadState()
-        {
-        //     _suspensionDriver.LoadState().Subscribe(state =>
-        //     {
-        //         if (state is xxViewModel loadedState)
-        //         {
-        //             this.BreakIntervalTime = loadedState.BreakIntervalTime;
-        //             this.BreakLengthTime = loadedState.BreakLengthTime;
-        //         }
-        //     });
+            // advanced
+            // _userConfig.IsAllowAutoStart = IsAllowAutoStart;
+            // _userConfig.IsAllowAutoCheckUpdate = IsAllowAutoCheckUpdate;
+            // _userConfig.IsAllowAutoDownloadUpdate = IsAllowAutoDownloadUpdate;
+
+            //TODO _userConfig.SaveConfig();
         }
     }
 }

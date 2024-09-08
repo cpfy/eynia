@@ -15,10 +15,15 @@ namespace eynia.Views
     {
         private BubbleWindowViewModel? ViewModel => DataContext as BubbleWindowViewModel;
 
-        public BubbleWindow()
+        // 无参数构造函数,给xaml用
+        public BubbleWindow() : this(new())  // new() 相当于null
+        {
+        }
+
+        public BubbleWindow(UserConfig userConfig)
         {
             InitializeComponent();
-            DataContext = new BubbleWindowViewModel();
+            DataContext = new BubbleWindowViewModel(userConfig);
         }
 
         private void InitializeComponent()

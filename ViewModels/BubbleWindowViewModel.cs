@@ -15,12 +15,14 @@ namespace eynia.ViewModels
     public class BubbleWindowViewModel : ViewModelBase
     {
         private Timer _timer;
+        private UserConfig userConfig;
 
-        public BubbleWindowViewModel()
+        public BubbleWindowViewModel(UserConfig userConfig)
         {
-            // var interval = SettingWindowViewModel.Instance.BreakIntervalTime;
+            this.userConfig = userConfig;
+            int t_interval = (int)userConfig.BreakIntervalTime;
+            _timer = new Timer(TimeSpan.FromMinutes(t_interval)); // default:35
             // _timer = new Timer(TimeSpan.FromSeconds(10));  // Test & Debug
-            _timer = new Timer(TimeSpan.FromMinutes(35)); // 35
             _timer.Tick += Timer_Tick;
             _timer.Completed += (sender, e) => TimerFinished(); // 订阅 Timer 完成事件
 
@@ -35,7 +37,7 @@ namespace eynia.ViewModels
             ExitAppCommand = ReactiveCommand.Create(() => Environment.Exit(0));
 
             // this field must contain a non-null value when exiting constructor
-            _restWindow = new RestWindow();
+            _restWindow = new RestWindow(userConfig);
         }
 
 
@@ -100,7 +102,7 @@ namespace eynia.ViewModels
             _timer.Pause();
 
             // 打开 RestWindow
-            var _restWindow = new RestWindow();
+            var _restWindow = new RestWindow(userConfig);
             _restWindow.Closed += RestWindow_Closed; // 订阅关闭事件
             _restWindow.Show();
         }
@@ -112,7 +114,7 @@ namespace eynia.ViewModels
 
         private void OpenSettingWindow()
         {
-            var settingWindow = new SettingWindow();
+            var settingWindow = new SettingWindow(userConfig);
             settingWindow.Show();
         }
     }

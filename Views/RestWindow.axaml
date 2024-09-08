@@ -12,7 +12,10 @@
         Topmost="True"
         Title="RESTing...">
 
-        <!-- WindowState="FullScreen" -->
+        <!--
+        WindowState="FullScreen"
+        Topmost="True"
+        -->
 
     <Window.Resources>
         <!-- Remember to add the needed namespace "conv" -->
