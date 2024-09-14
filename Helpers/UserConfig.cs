@@ -16,6 +16,8 @@ public class UserConfig
     public bool IsAllowPostpone { get; set; } = true;
     public bool IsAllowShowAlert { get; set; } = false;
 
+    public bool IsAllowAutoStart { get; set; } = false;
+
     public void LoadFromDictionary(Dictionary<string, object> data)
     {
         if (data.TryGetValue(nameof(BreakIntervalTime), out var breakIntervalTime))
@@ -38,6 +40,9 @@ public class UserConfig
 
         if(data.TryGetValue(nameof(IsAllowShowAlert), out var isAllowShowAlert))
             IsAllowShowAlert = Convert.ToBoolean(isAllowShowAlert);
+
+        if(data.TryGetValue(nameof(IsAllowAutoStart), out var isAllowAutoStart))
+            IsAllowAutoStart = Convert.ToBoolean(isAllowAutoStart);
     }
 
     public Dictionary<string, object> SaveToDictionary()
@@ -50,7 +55,8 @@ public class UserConfig
             { nameof(ForceBreakType), ForceBreakType },
             { nameof(PostponeCount), PostponeCount },
             { nameof(IsAllowPostpone), IsAllowPostpone },
-            { nameof(IsAllowShowAlert), IsAllowShowAlert }
+            { nameof(IsAllowShowAlert), IsAllowShowAlert },
+            { nameof(IsAllowAutoStart), IsAllowAutoStart }
         };
     }
 

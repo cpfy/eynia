@@ -2,16 +2,18 @@
 using Avalonia;
 using ReactiveUI;
 
+using Microsoft.Win32; // for RegistryKey
+
 using System.Windows.Input; // for ICommand
 using System.Runtime.Serialization;
-using System; // for [DataMember]
+using System;
+using System.Reflection; // for [DataMember]
 
 namespace eynia.ViewModels
 {
     public class SettingWindowViewModel : ViewModelBase
     {
         private UserConfig _userConfig;
-        // private UserConfig _cfg_bak; // 备份，用于重置
 
         public SettingWindowViewModel(UserConfig userConfig)
         {
@@ -86,19 +88,19 @@ namespace eynia.ViewModels
             set { this.RaiseAndSetIfChanged(ref _IsAllowAutoStart, value); }
         }
 
-        private bool _IsAllowAutoCheckUpdate = false;
-        public bool IsAllowAutoCheckUpdate
-        {
-            get { return _IsAllowAutoCheckUpdate; }
-            set { this.RaiseAndSetIfChanged(ref _IsAllowAutoCheckUpdate, value); }
-        }
+        // private bool _IsAllowAutoCheckUpdate = false;
+        // public bool IsAllowAutoCheckUpdate
+        // {
+        //     get { return _IsAllowAutoCheckUpdate; }
+        //     set { this.RaiseAndSetIfChanged(ref _IsAllowAutoCheckUpdate, value); }
+        // }
 
-        private bool _IsAllowAutoDownloadUpdate = false;
-        public bool IsAllowAutoDownloadUpdate
-        {
-            get { return _IsAllowAutoDownloadUpdate; }
-            set { this.RaiseAndSetIfChanged(ref _IsAllowAutoDownloadUpdate, value); }
-        }
+        // private bool _IsAllowAutoDownloadUpdate = false;
+        // public bool IsAllowAutoDownloadUpdate
+        // {
+        //     get { return _IsAllowAutoDownloadUpdate; }
+        //     set { this.RaiseAndSetIfChanged(ref _IsAllowAutoDownloadUpdate, value); }
+        // }
 
         public ICommand SaveConfigCommand { get; }
         public ICommand ResetConfigCommand { get; }
@@ -116,9 +118,10 @@ namespace eynia.ViewModels
             _userConfig.IsAllowShowAlert = IsAllowShowAlert;
 
             // advanced
-            // _userConfig.IsAllowAutoStart = IsAllowAutoStart;
-            // _userConfig.IsAllowAutoCheckUpdate = IsAllowAutoCheckUpdate;
-            // _userConfig.IsAllowAutoDownloadUpdate = IsAllowAutoDownloadUpdate;
+            _userConfig.IsAllowAutoStart = IsAllowAutoStart;
+            if(OperatingSystem.IsWindows()){
+                OperateWindowsRegKey();
+            }
 
             // 事件的第一个参数是 sender，通常是引发事件的对象本身（通常使用 this）
             OnConfigUpdated?.Invoke(this, _userConfig);
@@ -139,6 +142,27 @@ namespace eynia.ViewModels
             PostponeCount = _userConfig.PostponeCount;
             IsAllowPostpone = _userConfig.IsAllowPostpone;
             IsAllowShowAlert = _userConfig.IsAllowShowAlert;
+
+            // advanced
+            IsAllowAutoStart = _userConfig.IsAllowAutoStart;
+        }
+
+        private void OperateWindowsRegKey()
+        {
+            if(OperatingSystem.IsWindows()) // 双保险
+            {
+                // 操作注册表，最后的true是指writable
+                RegistryKey? rk = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+
+                if(rk != null){
+                    var AppName = "Eynia";
+                    string exePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
+                    if (IsAllowAutoStart)
+                        rk.SetValue(AppName, exePath);
+                    else
+                        rk.DeleteValue(AppName,false);
+                }
+            }
         }
     }
 }
