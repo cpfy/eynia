@@ -13,7 +13,10 @@
         ExtendClientAreaToDecorationsHint="True"
         ExtendClientAreaChromeHints="NoChrome"
         ExtendClientAreaTitleBarHeightHint="-1"
-        SystemDecorations="None">
+        SystemDecorations="None"
+        ShowInTaskbar="False"
+        Topmost="True">
+
 
     <Design.DataContext>
         <vm:BubbleWindowViewModel/>
@@ -51,7 +54,7 @@
         </ContextMenu>
     </Window.Resources>
 
-    <Border Name="Border" Width="80" Height="80" CornerRadius="10">
+    <Border Name="Border" Width="60" Height="60" CornerRadius="10">
         <Grid>
             <!-- 在XAML中，元素的堆叠顺序是由它们在代码中出现的顺序决定的：后添加的元素会显示在前添加的元素之上 -->
             <ProgressBar Name="RemainTimeBar" Minimum="0" Maximum="100" Value="{Binding RemainTimeBarValue}" Height="60" Width="60" MaxWidth="60" MaxHeight="60" Foreground="LightBlue"/>

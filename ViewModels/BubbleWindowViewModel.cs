@@ -67,6 +67,8 @@ namespace eynia.ViewModels
         private RestWindow _restWindow;
         private bool _isRestWindowOpen = false; // 确保在计时器完成时只打开一个窗口
 
+        public EventHandler<UserConfig>? OnConfigUpdated;
+
         private void Timer_Tick(object? sender, EventArgs e)
         {
 
@@ -130,6 +132,8 @@ namespace eynia.ViewModels
             userConfig = updatedConfig;
             int new_total_minutes = (int)userConfig.BreakIntervalTime;
             _timer.ChangeIntervalTime(new_total_minutes);
+
+            OnConfigUpdated?.Invoke(this, userConfig);
         }
     }
 }

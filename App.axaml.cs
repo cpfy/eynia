@@ -41,6 +41,12 @@ namespace eynia
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 bubbleWindow = new BubbleWindow(_userConfig);
+                var bbvm = bubbleWindow.DataContext as BubbleWindowViewModel;
+                if (bbvm != null)
+                {
+                    bbvm.OnConfigUpdated += SaveConfigData; // 保存到文件
+                }
+
                 desktop.MainWindow = bubbleWindow;
             }
 
@@ -49,17 +55,18 @@ namespace eynia
         }
 
         // 保存配置数据
-        private void SaveConfigData()
+        private void SaveConfigData(object? sender, UserConfig userConfig)
         {
             if(_userConfig == null || _userConfigService == null)
                 return;
 
+            _userConfig = userConfig;
             var data = _userConfig.SaveToDictionary();
             _userConfigService.SaveConfig(data);
         }
 
         // 绑定system tray点击事件
-        private void OpenRestWindow(object sender, EventArgs e)
+        private void OpenRestWindow(object? sender, EventArgs e)
         {
             if(_userConfig == null)
                 return;
@@ -80,7 +87,11 @@ namespace eynia
 
         private void ExitApp(object sender, EventArgs e)
         {
-            SaveConfigData();
+            // 保存当前配置数据
+            if(_userConfig != null){
+                SaveConfigData(this, _userConfig);
+            }
+
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 desktop.Shutdown();
