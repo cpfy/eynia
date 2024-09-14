@@ -38,6 +38,8 @@ namespace eynia.ViewModels
 
             // this field must contain a non-null value when exiting constructor
             _restWindow = new RestWindow(userConfig);
+
+
         }
 
 
@@ -115,7 +117,19 @@ namespace eynia.ViewModels
         private void OpenSettingWindow()
         {
             var settingWindow = new SettingWindow(userConfig);
+            var svm = settingWindow.DataContext as SettingWindowViewModel;
+            if(svm != null)
+            {
+                svm.OnConfigUpdated += HandleConfigUpdated;
+            }
             settingWindow.Show();
+        }
+
+        private void HandleConfigUpdated(object? sender, UserConfig updatedConfig)
+        {
+            userConfig = updatedConfig;
+            int new_total_minutes = (int)userConfig.BreakIntervalTime;
+            _timer.ChangeIntervalTime(new_total_minutes);
         }
     }
 }

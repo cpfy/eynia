@@ -31,7 +31,8 @@
                 </NativeMenuItem>
                 <NativeMenuItem Header="立即休息" Click="OpenRestWindow" />
                 <!-- <NativeMenuItemSeparator /> -->
-                <NativeMenuItem Header="退出" Click="ExitApp" />
+                <!-- <NativeMenuItem Header="退出" Click="ExitApp" /> -->
+                <NativeMenuItem Header="退出"/>
                     <!-- <MenuItem.Icon>
                         <PathIcon Data="{StaticResource power_regular}"/>
                     </MenuItem.Icon> -->

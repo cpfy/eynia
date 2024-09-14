@@ -6,27 +6,28 @@ namespace eynia.Models
 {
     public class Timer
     {
-        private readonly TimeSpan _interval;
+        private readonly TimeSpan _interval = TimeSpan.FromSeconds(1);  // 单次更新计时器间隔，默认1s
         private CancellationTokenSource _cts;
         private Task? _timerTask;
         private DateTime _startTime;
         private TimeSpan _elapsedTime; // 已经过时间
+        public TimeSpan TotalDuration { get; set; }
+        public TimeSpan CurrentTime => _elapsedTime;
+
+        // 状态属性
         private bool _isPaused;
+        public bool IsRunning => _timerTask != null && !_timerTask.IsCompleted && !_isPaused;
+        public bool IsPaused => _isPaused;
 
         public event EventHandler? Tick;
         public event EventHandler? Completed; // 新增 Completed 事件
 
-        public TimeSpan TotalDuration { get; set; }
-        public TimeSpan CurrentTime => _elapsedTime;
-
         public Timer(TimeSpan totalDuration)
         {
-            _interval = TimeSpan.FromSeconds(1); // interval默认=1s
             TotalDuration = totalDuration;
             _elapsedTime = TimeSpan.Zero;
 
             _cts = new CancellationTokenSource();
-
             Start();
         }
 
@@ -57,7 +58,12 @@ namespace eynia.Models
                 return;
             }
 
-            Start();
+
+            _isPaused = false;
+            _cts = new CancellationTokenSource();
+            _timerTask = RunTimer(_cts.Token);
+
+            // Start();
         }
 
         public void Stop()
@@ -116,7 +122,12 @@ namespace eynia.Models
             }
         }
 
-        public bool IsRunning => _timerTask != null && !_timerTask.IsCompleted && !_isPaused;
-        public bool IsPaused => _isPaused;
+        // if被Setting修改了时间
+        public void ChangeIntervalTime(int updatedMinute)
+        {
+            Pause();
+            TotalDuration = TimeSpan.FromMinutes(updatedMinute);
+            Resume();
+        }
     }
 }

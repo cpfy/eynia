@@ -3,17 +3,20 @@ using Avalonia;
 using ReactiveUI;
 
 using System.Windows.Input; // for ICommand
-using System.Runtime.Serialization; // for [DataMember]
+using System.Runtime.Serialization;
+using System; // for [DataMember]
 
 namespace eynia.ViewModels
 {
     public class SettingWindowViewModel : ViewModelBase
     {
         private UserConfig _userConfig;
+        // private UserConfig _cfg_bak; // 备份，用于重置
 
         public SettingWindowViewModel(UserConfig userConfig)
         {
-            this._userConfig = userConfig;
+            _userConfig = userConfig;
+            // _cfg_bak = new UserConfig(userConfig); // 备份
             SaveConfigCommand = ReactiveCommand.Create(SaveConfig);
             ResetConfigCommand = ReactiveCommand.Create(ResetConfig);
 
@@ -99,6 +102,9 @@ namespace eynia.ViewModels
 
         public ICommand SaveConfigCommand { get; }
         public ICommand ResetConfigCommand { get; }
+
+        public event EventHandler<UserConfig>? OnConfigUpdated; // 传递UserConfig示例
+
         private void SaveConfig()
         {
             _userConfig.BreakIntervalTime = BreakIntervalTime ?? 45;
@@ -114,11 +120,16 @@ namespace eynia.ViewModels
             // _userConfig.IsAllowAutoCheckUpdate = IsAllowAutoCheckUpdate;
             // _userConfig.IsAllowAutoDownloadUpdate = IsAllowAutoDownloadUpdate;
 
-            //TODO _userConfig.SaveConfig();
+            // 事件的第一个参数是 sender，通常是引发事件的对象本身（通常使用 this）
+            OnConfigUpdated?.Invoke(this, _userConfig);
         }
 
         private void ResetConfig()
         {
+            /*
+            如果已经保存了、则无法修改
+            */
+
             // 用初始化时的参数再load一遍。既是init、也是reload
             // 如果直接赋值/设置私有字段（如 _BreakIntervalTime、_BreakLengthTime 等），而没有通过属性的 set 方法。这意味着 RaiseAndSetIfChanged 没有被调用，因此不会触发属性变更通知，导致视图没有更新
             BreakIntervalTime = _userConfig.BreakIntervalTime;

@@ -44,6 +44,7 @@ namespace eynia
                 desktop.MainWindow = bubbleWindow;
             }
 
+
             base.OnFrameworkInitializationCompleted();
         }
 

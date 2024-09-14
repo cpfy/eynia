@@ -9,7 +9,7 @@ public class UserConfig
 {
     // 若未找到配置文件，则使用默认值
     public decimal BreakIntervalTime { get; set; } = 35;
-    public decimal BreakLengthTime { get; set; } = 2;
+    public decimal BreakLengthTime { get; set; } = 4;
     public bool IsForceBreak { get; set; } = true;
     public string ForceBreakType { get; set; } = "一般强制";
     public decimal PostponeCount { get; set; } = 3;
