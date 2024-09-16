@@ -12,30 +12,28 @@
 
     <TrayIcon.Icons>
         <TrayIcons>
+        <!-- TODO: 补全预估时间 -->
         <TrayIcon Icon="/Assets/eynia.ico"
                     ToolTipText="下次休息：xxx\n 剩余时间：xxx">
             <TrayIcon.Menu>
                 <!-- 使用引入的axaml替代，避免写在App.axaml中 -->
-                <!-- <views:TrayIconMenu/> -->
                 <NativeMenu>
-                <!-- NativeMenuItem 内容 -->
-                <NativeMenuItem Header="设置属性" Click="OpenSettingWindow" />
-                <NativeMenuItem Header="休息方案" />
-                <NativeMenuItem Header="推迟休息">
-                    <NativeMenu>
-                    <!-- 此处用binding形如反而会报错 Command="{Binding AddMinutesCommand}" /> -->
-                    <NativeMenuItem Header="3分钟" Click="DelayRest"/>
-                    <NativeMenuItem Header="5分钟" Click="DelayRest"/>
-                    <NativeMenuItem Header="8分钟" Click="DelayRest"/>
-                    </NativeMenu>
-                </NativeMenuItem>
-                <NativeMenuItem Header="立即休息" Click="OpenRestWindow" />
-                <!-- <NativeMenuItemSeparator /> -->
-                <!-- <NativeMenuItem Header="退出" Click="ExitApp" /> -->
-                <NativeMenuItem Header="退出"/>
-                    <!-- <MenuItem.Icon>
-                        <PathIcon Data="{StaticResource power_regular}"/>
-                    </MenuItem.Icon> -->
+                    <!-- NativeMenuItem 内容 -->
+                    <NativeMenuItem Header="设置属性" Click="OpenSettingWindow" />
+                    <NativeMenuItem Header="休息方案" />
+                    <NativeMenuItem Header="推迟休息">
+                        <NativeMenu>
+                            <!-- 此处用binding形如反而会报错，大概是因为App.xaml没有vm Command="{Binding AddMinutesCommand}" /> -->
+                            <NativeMenuItem Header="3分钟" Click="DelayRest"/>
+                            <NativeMenuItem Header="5分钟" Click="DelayRest"/>
+                            <NativeMenuItem Header="8分钟" Click="DelayRest"/>
+                        </NativeMenu>
+                    </NativeMenuItem>
+                    <NativeMenuItem Header="立即休息" Click="OpenRestWindow" />
+                    <NativeMenuItem Header="退出" />
+                        <!-- <NativeMenuItem.Icon>
+                            <PathIcon Width="14" Height="14" Data="{StaticResource power_regular}"/>
+                        </NativeMenuItem.Icon> -->
                 </NativeMenu>
             </TrayIcon.Menu>
         </TrayIcon>

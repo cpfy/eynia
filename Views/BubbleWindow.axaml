@@ -25,8 +25,34 @@
     <!-- 在Resourse中定义了一个MenuFlyout，用于在多个控件中共享右键菜单 -->
     <Window.Resources>
         <ContextMenu x:Key="SharedMenu">
-            <MenuItem Header="设置属性" Command="{Binding OpenSettingWindowCommand}"/>
+            <MenuItem Header="设置属性" Command="{Binding OpenSettingWindowCommand}">
+                <MenuItem.Icon>
+                    <PathIcon Width="14" Height="14" Data="{StaticResource settings_regular}"/>
+                </MenuItem.Icon>
+            </MenuItem>
             <MenuItem Header="休息方案"/>
+            <Separator />
+            <!-- string: 取消置顶/置于顶层; icon也产生变化 -->
+            <MenuItem Header="{Binding PinnedStateStr}" Command="{Binding PinnedOnTopCommand}">
+                <MenuItem.Icon>
+                    <!-- fail! -->
+                    <!-- <PathIcon Width="14" Height="14" Data="{Binding PinnedIconResourceKey, Converter={StaticResource PinnedConverter}}"/> -->
+                    <PathIcon Width="14" Height="14" Classes.IsPinned="{Binding IsPinnedTop}" Classes.IsNotPinned="{Binding !IsPinnedTop}">
+                        <PathIcon.Styles>
+                            <Style Selector="PathIcon.IsPinned">
+                            <Style.Setters>
+                                <Setter Property="Data" Value="{StaticResource pin_off_regular}"/>
+                            </Style.Setters>
+                            </Style>
+                            <Style Selector="PathIcon.IsNotPinned">
+                            <Style.Setters>
+                                <Setter Property="Data" Value="{StaticResource pin_regular}"/>
+                            </Style.Setters>
+                            </Style>
+                        </PathIcon.Styles>
+                    </PathIcon>
+                </MenuItem.Icon>
+            </MenuItem>
             <Separator />
             <MenuItem Header="推迟休息">
                 <ContextMenu>
@@ -50,9 +76,14 @@
             <MenuItem Header="立即休息" Command="{Binding ImmRestCommand}"/>
             <Separator />
             <!-- <MenuItem Header="退出" Command="{Binding ExitAppCommand}"/> -->
-            <MenuItem Header="退出"/>
+            <MenuItem Header="退出">
+                <MenuItem.Icon>
+                    <PathIcon Width="14" Height="14" Data="{StaticResource power_regular}"/>
+                </MenuItem.Icon>
+            </MenuItem>
         </ContextMenu>
     </Window.Resources>
+
 
     <Border Name="Border" Width="60" Height="60" CornerRadius="10">
         <Grid>

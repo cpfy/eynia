@@ -8,6 +8,7 @@ using System;
 
 using DragDemo;
 using eynia.ViewModels;
+using DynamicData;
 
 namespace eynia.Views
 {
@@ -24,6 +25,10 @@ namespace eynia.Views
         {
             InitializeComponent();
             DataContext = new BubbleWindowViewModel(userConfig);
+            if(vm != null)
+            {
+                vm.OnPinnedTopChanged += ChangeTopMostState;
+            }
         }
 
         private void InitializeComponent()
@@ -60,6 +65,13 @@ namespace eynia.Views
         public void AddMinutes(int minutes)
         {
             vm?.AddMinutes(minutes);
+        }
+
+        // 窗口置顶状态
+        private void ChangeTopMostState(object? sender, bool isPinnedTop)
+        {
+            // 这个属性是Window的，直接可访问到
+            Topmost = isPinnedTop;
         }
     }
 }

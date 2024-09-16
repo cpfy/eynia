@@ -1,4 +1,6 @@
+using Avalonia; // for Application
 using Avalonia.Threading;
+using Avalonia.Media; // for StreamGeometry
 
 using ReactiveUI;
 using System;
@@ -35,6 +37,8 @@ namespace eynia.ViewModels
             OpenSettingWindowCommand = ReactiveCommand.Create(OpenSettingWindow);
             ImmRestCommand = ReactiveCommand.Create(TimerFinished);
             ExitAppCommand = ReactiveCommand.Create(() => Environment.Exit(0));
+
+            PinnedOnTopCommand = ReactiveCommand.Create(ToggleTopMostState);
 
             // this field must contain a non-null value when exiting constructor
             _restWindow = new RestWindow(userConfig);
@@ -135,5 +139,73 @@ namespace eynia.ViewModels
 
             OnConfigUpdated?.Invoke(this, userConfig);
         }
+
+        // 置于顶层
+        public ICommand PinnedOnTopCommand { get; }
+        private bool _IsPinnedTop = true;
+        public bool IsPinnedTop
+        {
+            get { return _IsPinnedTop; }
+            set
+            {
+                this.RaiseAndSetIfChanged(ref _IsPinnedTop, value);
+                this.RaisePropertyChanged(nameof(PinnedStateStr));  // 手动通知 PinnedStateStr 改变
+            }
+        }
+
+        public event EventHandler<bool>? OnPinnedTopChanged;
+
+        public string PinnedStateStr
+        {
+            get { return _IsPinnedTop ? "取消置顶" : "置于顶层"; }
+        }
+
+        private void ToggleTopMostState()
+        {
+            IsPinnedTop = !IsPinnedTop;
+            OnPinnedTopChanged?.Invoke(this, IsPinnedTop);
+        }
+
+        // 以下是fail方案
+        // public string PinnedIconResourceKey
+        // {
+        //     get { return _IsPinnedTop ? "pin_off_regular" : "pin_regular"; }
+        // }
+
+        // private StreamGeometry? _PinIconData;
+        // public StreamGeometry? PinIconData
+        // {
+        //     get
+        //     {
+        //         string key = _IsPinnedTop ? "pin_off_regular" : "pin_regular";
+        //         return GetIconForName(key);
+        //     }
+        // }
+
+        // public static StreamGeometry? GetIconForName(string name)
+        // {
+        //     /*
+        //     Console.WriteLine($"GetIconForName: {name}");
+        //     return (StreamGeometry?)Application.Current.Resources[name];
+        //     Console.WriteLine($"GetIconForName: {name}");
+        //     Console.WriteLine($"Resource count: {Application.Current == null}");
+        //     Console.WriteLine($"ss:{Application.Current.Styles}");
+        //     // Console.WriteLine($"ss:{Application.Current.Styles.Resources}");
+        //     Console.WriteLine($"ss:{Application.Current.Styles.Resources.Count}");
+        //     Console.WriteLine($"Resource count: {Application.Current.Resources.Count}");
+        //     Console.WriteLine($"Resource keys: {string.Join(", ", Application.Current.Resources.Keys)}");
+        //     */
+        //     if (Application.Current.Resources.ContainsKey(name))
+        //     {
+        //         var resource = Application.Current.Resources[name];
+        //         Console.WriteLine($"Resource type: {resource.GetType()}");
+        //         return resource as StreamGeometry;
+        //     }
+        //     else
+        //     {
+        //         Console.WriteLine($"Resource not found: {name}");
+        //     }
+        //     return null;
+        // }
     }
 }
