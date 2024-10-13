@@ -5,11 +5,8 @@
         x:CompileBindings="True"
         x:DataType="vm:BubbleWindowViewModel"
         x:Class="eynia.Views.BubbleWindow"
-        Title="Bubble Window"
-        Width="60"
-        MaxWidth="60"
-        Height="60"
-        MaxHeight="60"
+        Width="{Binding EDGE}"
+        Height="{Binding EDGE}"
         ExtendClientAreaToDecorationsHint="True"
         ExtendClientAreaChromeHints="NoChrome"
         ExtendClientAreaTitleBarHeightHint="-1"
@@ -85,11 +82,12 @@
     </Window.Resources>
 
 
-    <Border Name="Border" Width="60" Height="60" CornerRadius="10">
+    <!-- default=60 -->
+    <Border Name="Border" Width="{Binding EDGE}" Height="{Binding EDGE}" CornerRadius="10">
         <Grid>
             <!-- 在XAML中，元素的堆叠顺序是由它们在代码中出现的顺序决定的：后添加的元素会显示在前添加的元素之上 -->
-            <ProgressBar Name="RemainTimeBar" Minimum="0" Maximum="100" Value="{Binding RemainTimeBarValue}" Height="60" Width="60" MaxWidth="60" MaxHeight="60" Foreground="LightBlue"/>
-            <TextBlock Name="TimeTextBlock" Text="{Binding RemainingTimeStr}" FontSize="17" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+            <ProgressBar Name="RemainTimeBar" Minimum="0" Maximum="100" Value="{Binding RemainTimeBarValue}" Height="{Binding EDGE}" Width="{Binding EDGE}" Foreground="LightBlue"/>
+            <TextBlock Name="TimeTextBlock" Text="{Binding RemainingTimeStr}" FontSize="{Binding TEXT_SIZE}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
         </Grid>
 
         <!-- 为Border添加右键菜单 -->

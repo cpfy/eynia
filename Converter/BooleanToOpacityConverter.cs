@@ -2,6 +2,9 @@ using Avalonia.Data.Converters;
 using System; // for Type, NotImplementedException
 using System.Globalization; // for CultureInfo, IValueConverter
 
+/*
+from bool to set opacity of an element
+*/
 
 namespace eynia.Converter
 {

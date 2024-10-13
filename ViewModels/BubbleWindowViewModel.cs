@@ -22,6 +22,10 @@ namespace eynia.ViewModels
         public BubbleWindowViewModel(UserConfig userConfig)
         {
             this.userConfig = userConfig;
+
+            // Appearance of bubble window
+            SetAppearanceSize();
+
             int t_interval = (int)userConfig.BreakIntervalTime;
             _timer = new Timer(TimeSpan.FromMinutes(t_interval)); // default:35
             // _timer = new Timer(TimeSpan.FromSeconds(10));  // Test & Debug
@@ -42,12 +46,47 @@ namespace eynia.ViewModels
 
             // this field must contain a non-null value when exiting constructor
             _restWindow = new RestWindow(userConfig);
-
-
         }
 
+        // Windows width、height，文字大小 参数变量
+        private int _EDGE = 60; // 实际上用从userconfig读入的数据覆盖
+        public int EDGE
+        {
+            get { return _EDGE; }
+            set { this.RaiseAndSetIfChanged(ref _EDGE, value); }
+        }
+        private double _TEXT_SIZE = 17;
+        public double TEXT_SIZE
+        {
+            get { return _TEXT_SIZE; }
+            set { this.RaiseAndSetIfChanged(ref _TEXT_SIZE, value); }
+        }
+
+        private void SetAppearanceSize()
+        {
+            string size = userConfig.BubbleSize;
+            double ratio = size switch
+            {
+                "非常小" => 0.5,
+                "小" => 0.75,
+                "中" => 1,
+                "大" => 1.25,
+                "非常大" => 1.5,
+                _ => 1,
+            };
+            EDGE = (int)(60 * ratio);
+            TEXT_SIZE = 17 * ratio;
+        }
+
+        /*
+        在 MVVM 模式下明确要求:当属性的值发生变化时，必须通知 UI。这通常是通过实现 INotifyPropertyChanged 接口来实现的。
+        如果想要动态绑定并自动更新 UI，则必须实现 INotifyPropertyChanged
+        */
 
 
+
+
+        // vm逻辑参数
         private string _RemainingTimeStr;
         public string RemainingTimeStr
         {

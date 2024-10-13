@@ -16,6 +16,10 @@ public class UserConfig
     public bool IsAllowPostpone { get; set; } = true;
     public bool IsAllowShowAlert { get; set; } = false;
 
+    // 外观
+    public string BubbleSize { get; set; } = "中";
+
+    // 高级
     public bool IsAllowAutoStart { get; set; } = false;
 
     public void LoadFromDictionary(Dictionary<string, object> data)
@@ -41,6 +45,13 @@ public class UserConfig
         if(data.TryGetValue(nameof(IsAllowShowAlert), out var isAllowShowAlert))
             IsAllowShowAlert = Convert.ToBoolean(isAllowShowAlert);
 
+        // ------------------------------
+
+        if(data.TryGetValue(nameof(BubbleSize), out var bubbleSize))
+            BubbleSize = Convert.ToString(bubbleSize) ?? BubbleSize;
+
+        // ------------------------------
+
         if(data.TryGetValue(nameof(IsAllowAutoStart), out var isAllowAutoStart))
             IsAllowAutoStart = Convert.ToBoolean(isAllowAutoStart);
     }
@@ -56,6 +67,7 @@ public class UserConfig
             { nameof(PostponeCount), PostponeCount },
             { nameof(IsAllowPostpone), IsAllowPostpone },
             { nameof(IsAllowShowAlert), IsAllowShowAlert },
+            { nameof(BubbleSize), BubbleSize },
             { nameof(IsAllowAutoStart), IsAllowAutoStart }
         };
     }

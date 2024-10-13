@@ -7,7 +7,8 @@ using Microsoft.Win32; // for RegistryKey
 using System.Windows.Input; // for ICommand
 using System.Runtime.Serialization;
 using System;
-using System.Reflection; // for [DataMember]
+using System.Reflection;
+using System.Diagnostics; // for [DataMember]
 
 namespace eynia.ViewModels
 {
@@ -80,6 +81,29 @@ namespace eynia.ViewModels
             set { this.RaiseAndSetIfChanged(ref _IsAllowShowAlert, value); }
         }
 
+        // appearance
+        public enum Size
+        {
+            VerySmall,  // 对应 0.5x
+            Small,      // 对应 0.75x
+            Medium,     // 对应 1x
+            Large,      // 对应 1.25x
+            VeryLarge   // 对应 1.5x
+        }
+        private string _BubbleSize = "中";
+        public string BubbleSize
+        {
+            get { return _BubbleSize; }
+            set { this.RaiseAndSetIfChanged(ref _BubbleSize, value); }
+        }
+
+        private Size _BubbleSizeEnum;   // 在后面ResetConfig中一起更新
+        public Size BubbleSizeEnum
+        {
+            get { return _BubbleSizeEnum; }
+            set { this.RaiseAndSetIfChanged(ref _BubbleSizeEnum, value); }
+        }
+
         // advanced
         private bool _IsAllowAutoStart = false;
         public bool IsAllowAutoStart
@@ -115,6 +139,7 @@ namespace eynia.ViewModels
             _userConfig.ForceBreakType = ForceBreakType;
             _userConfig.PostponeCount = PostponeCount ?? 3;
             _userConfig.IsAllowPostpone = IsAllowPostpone;
+            _userConfig.BubbleSize = BubbleSize ?? "中";
             _userConfig.IsAllowShowAlert = IsAllowShowAlert;
 
             // advanced
@@ -142,6 +167,20 @@ namespace eynia.ViewModels
             PostponeCount = _userConfig.PostponeCount;
             IsAllowPostpone = _userConfig.IsAllowPostpone;
             IsAllowShowAlert = _userConfig.IsAllowShowAlert;
+
+            // appearance
+            BubbleSize = _userConfig.BubbleSize;
+            BubbleSizeEnum = BubbleSize switch
+            {
+                "非常小" => Size.VerySmall,
+                "小" => Size.Small,
+                "中" => Size.Medium,
+                "大" => Size.Large,
+                "非常大" => Size.VeryLarge,
+                _ => Size.Medium,
+            };
+            Console.WriteLine($"BubbleSize: {BubbleSize}");
+            Console.WriteLine($"BubbleSizeEnum: {BubbleSizeEnum}");
 
             // advanced
             IsAllowAutoStart = _userConfig.IsAllowAutoStart;
