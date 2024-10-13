@@ -70,8 +70,7 @@
             </MenuItem>
             <MenuItem Header="立即休息" Command="{Binding ImmRestCommand}"/>
             <Separator />
-            <!-- <MenuItem Header="退出" Command="{Binding ExitAppCommand}"/> -->
-            <MenuItem Header="退出">
+            <MenuItem Header="退出" Command="{Binding ExitAppCommand}">
                 <MenuItem.Icon>
                     <PathIcon Width="14" Height="14" Data="{StaticResource power_regular}"/>
                 </MenuItem.Icon>
