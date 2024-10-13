@@ -52,23 +52,21 @@
             </MenuItem>
             <Separator />
             <MenuItem Header="推迟休息">
-                <ContextMenu>
-                    <MenuItem Header="3分钟" Command="{Binding AddMinutesCommand}">
-                        <MenuItem.CommandParameter>
-                            <sys:Int32>3</sys:Int32>
-                        </MenuItem.CommandParameter>
-                    </MenuItem>
-                    <MenuItem Header="5分钟" Command="{Binding AddMinutesCommand}">
-                        <MenuItem.CommandParameter>
-                            <sys:Int32>5</sys:Int32>
-                        </MenuItem.CommandParameter>
-                    </MenuItem>
-                    <MenuItem Header="8分钟" Command="{Binding AddMinutesCommand}">
-                        <MenuItem.CommandParameter>
-                            <sys:Int32>8</sys:Int32>
-                        </MenuItem.CommandParameter>
-                    </MenuItem>
-                </ContextMenu>
+                <MenuItem Header="3分钟" Command="{Binding AddMinutesCommand}">
+                    <MenuItem.CommandParameter>
+                        <sys:Int32>3</sys:Int32>
+                    </MenuItem.CommandParameter>
+                </MenuItem>
+                <MenuItem Header="5分钟" Command="{Binding AddMinutesCommand}">
+                    <MenuItem.CommandParameter>
+                        <sys:Int32>5</sys:Int32>
+                    </MenuItem.CommandParameter>
+                </MenuItem>
+                <MenuItem Header="8分钟" Command="{Binding AddMinutesCommand}">
+                    <MenuItem.CommandParameter>
+                        <sys:Int32>8</sys:Int32>
+                    </MenuItem.CommandParameter>
+                </MenuItem>
             </MenuItem>
             <MenuItem Header="立即休息" Command="{Binding ImmRestCommand}"/>
             <Separator />

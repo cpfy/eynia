@@ -71,7 +71,7 @@
                     <TextBlock Text="悬浮窗大小" />
                     <StackPanel Orientation="Horizontal">
                         <!-- 分别对应0.5x, 0.75x, 1x, 1.25x, 1.5x -->
-                        <RadioButton Content="非常小" Margin="5"
+                        <!-- <RadioButton Content="非常小" Margin="5"
                             IsChecked="{Binding BubbleSizeEnum, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:static vm:SettingWindowViewModel:Size.VerySmall}}"/>
                         <RadioButton Content="小" Margin="5"
                             IsChecked="{Binding BubbleSizeEnum, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:static vm:SettingWindowViewModel:Size.Small}}"/>
@@ -80,7 +80,7 @@
                         <RadioButton Content="大" Margin="5"
                             IsChecked="{Binding BubbleSizeEnum, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:static vm:SettingWindowViewModel:Size.Large}}"/>
                         <RadioButton Content="非常大" Margin="5"
-                            IsChecked="{Binding BubbleSizeEnum, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:static vm:SettingWindowViewModel:Size.VeryLarge}}"/>
+                            IsChecked="{Binding BubbleSizeEnum, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:static vm:SettingWindowViewModel:Size.VeryLarge}}"/> -->
                     </StackPanel>
                 </StackPanel>
             </TabItem>
