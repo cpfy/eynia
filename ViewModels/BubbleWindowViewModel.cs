@@ -64,19 +64,34 @@ namespace eynia.ViewModels
 
         private void SetAppearanceSize()
         {
-            string size = userConfig.BubbleSize;
-            double ratio = size switch
-            {
-                "非常小" => 0.5,
-                "小" => 0.75,
-                "中" => 1,
-                "大" => 1.25,
-                "非常大" => 1.5,
-                _ => 1,
-            };
+            double ratio = userConfig.UIScale;
+            // double ratio = size switch
+            // {
+            //     "非常小" => 0.5,
+            //     "小" => 0.75,
+            //     "中" => 1,
+            //     "大" => 1.25,
+            //     "非常大" => 1.5,
+            //     _ => 1,
+            // };
             EDGE = (int)(60 * ratio);
             TEXT_SIZE = 17 * ratio;
         }
+
+        // public void updateUIScale()
+        // {
+        //     SetAppearanceSize();
+        //     // 重新设置窗口大小
+        //     // if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        //     // {
+        //     //     if (desktop.MainWindow is BubbleWindow bubbleWindow)
+        //     //     {
+        //     //         bubbleWindow.Width = EDGE;
+        //     //         bubbleWindow.Height = EDGE;
+        //     //         bubbleWindow.FontSize = TEXT_SIZE;
+        //     //     }
+        //     // }
+        // }
 
         /*
         在 MVVM 模式下明确要求:当属性的值发生变化时，必须通知 UI。这通常是通过实现 INotifyPropertyChanged 接口来实现的。
@@ -170,9 +185,16 @@ namespace eynia.ViewModels
             settingWindow.Show();
         }
 
+        // 设置更新保存后，更正timer时间、UI大小等显示状态
         private void HandleConfigUpdated(object? sender, UserConfig updatedConfig)
         {
             userConfig = updatedConfig;
+
+            // 更新 BubbleWindow 的 UI 大小
+            SetAppearanceSize();
+            Console.WriteLine($"updateUIScale: {userConfig.UIScale}");
+
+            // 更新计时器的当前时间
             int new_total_minutes = (int)userConfig.BreakIntervalTime;
             _timer.ChangeIntervalTime(new_total_minutes);
 

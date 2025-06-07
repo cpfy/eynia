@@ -17,7 +17,8 @@ public class UserConfig
     public bool IsAllowShowAlert { get; set; } = false;
 
     // 外观
-    public string BubbleSize { get; set; } = "中";
+    // public string BubbleSize { get; set; } = "中";
+    public double UIScale { get; set; } = 1.0; // 界面缩放比例
 
     // 高级
     public bool IsAllowAutoStart { get; set; } = false;
@@ -47,8 +48,10 @@ public class UserConfig
 
         // ------------------------------
 
-        if(data.TryGetValue(nameof(BubbleSize), out var bubbleSize))
-            BubbleSize = Convert.ToString(bubbleSize) ?? BubbleSize;
+        // if(data.TryGetValue(nameof(BubbleSize), out var bubbleSize))
+        //     BubbleSize = Convert.ToString(bubbleSize) ?? BubbleSize;
+        if(data.TryGetValue(nameof(UIScale), out var uiScale))
+            UIScale = Convert.ToDouble(uiScale);
 
         // ------------------------------
 
@@ -67,7 +70,8 @@ public class UserConfig
             { nameof(PostponeCount), PostponeCount },
             { nameof(IsAllowPostpone), IsAllowPostpone },
             { nameof(IsAllowShowAlert), IsAllowShowAlert },
-            { nameof(BubbleSize), BubbleSize },
+            // { nameof(BubbleSize), BubbleSize },
+            { nameof(UIScale), UIScale },
             { nameof(IsAllowAutoStart), IsAllowAutoStart }
         };
     }
