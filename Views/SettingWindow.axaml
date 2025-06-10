@@ -68,19 +68,30 @@
 
             <TabItem Header="外观">
                 <StackPanel Margin="10">
-                    <TextBlock Text="悬浮窗大小" />
                     <StackPanel Orientation="Horizontal">
                         <!-- 分别对应0.5x, 0.75x, 1x, 1.25x, 1.5x -->
                         <!-- <RadioButton Content="非常小" Margin="5"
-                            IsChecked="{Binding BubbleSizeEnum, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:static vm:SettingWindowViewModel:Size.VerySmall}}"/>
+                            IsChecked="{Binding BubbleSizeEnum, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static vm:SettingWindowViewModel:Size.VerySmall}}"/>
                         <RadioButton Content="小" Margin="5"
-                            IsChecked="{Binding BubbleSizeEnum, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:static vm:SettingWindowViewModel:Size.Small}}"/>
+                            IsChecked="{Binding BubbleSizeEnum, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static vm:SettingWindowViewModel:Size.Small}}"/>
                         <RadioButton Content="中" Margin="5"
-                            IsChecked="{Binding BubbleSizeEnum, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:static vm:SettingWindowViewModel:Size.Medium}}"/>
+                            IsChecked="{Binding BubbleSizeEnum, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static vm:SettingWindowViewModel:Size.Medium}}"/>
                         <RadioButton Content="大" Margin="5"
-                            IsChecked="{Binding BubbleSizeEnum, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:static vm:SettingWindowViewModel:Size.Large}}"/>
+                            IsChecked="{Binding BubbleSizeEnum, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static vm:SettingWindowViewModel:Size.Large}}"/>
                         <RadioButton Content="非常大" Margin="5"
-                            IsChecked="{Binding BubbleSizeEnum, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:static vm:SettingWindowViewModel:Size.VeryLarge}}"/> -->
+                            IsChecked="{Binding BubbleSizeEnum, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static vm:SettingWindowViewModel:Size.VeryLarge}}"/> -->
+
+                        <TextBlock Text="悬浮窗大小：" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                        <Slider Name="SizeSlider"
+                                Minimum="0.5"
+                                Maximum="2.0"
+                                Value="{Binding UIScale}"
+                                Width="200"
+                                TickFrequency="0.1"
+                                IsSnapToTickEnabled="True"/>
+                        <TextBlock Text="{Binding UIScale, StringFormat={}{0:P0}}"
+                                VerticalAlignment="Center"
+                                Margin="10,0,0,0"/>
                     </StackPanel>
                 </StackPanel>
             </TabItem>

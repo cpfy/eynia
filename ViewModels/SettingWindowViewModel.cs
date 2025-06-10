@@ -82,26 +82,33 @@ namespace eynia.ViewModels
         }
 
         // appearance
-        public enum Size
-        {
-            VerySmall,  // 对应 0.5x
-            Small,      // 对应 0.75x
-            Medium,     // 对应 1x
-            Large,      // 对应 1.25x
-            VeryLarge   // 对应 1.5x
-        }
-        private string _BubbleSize = "中";
-        public string BubbleSize
-        {
-            get { return _BubbleSize; }
-            set { this.RaiseAndSetIfChanged(ref _BubbleSize, value); }
-        }
+        // public enum Size
+        // {
+        //     VerySmall,  // 对应 0.5x
+        //     Small,      // 对应 0.75x
+        //     Medium,     // 对应 1x
+        //     Large,      // 对应 1.25x
+        //     VeryLarge   // 对应 1.5x
+        // }
+        // private string _BubbleSize = "中";
+        // public string BubbleSize
+        // {
+        //     get { return _BubbleSize; }
+        //     set { this.RaiseAndSetIfChanged(ref _BubbleSize, value); }
+        // }
 
-        private Size _BubbleSizeEnum;   // 在后面ResetConfig中一起更新
-        public Size BubbleSizeEnum
+        // private Size _BubbleSizeEnum;   // 在后面ResetConfig中一起更新
+        // public Size BubbleSizeEnum
+        // {
+        //     get { return _BubbleSizeEnum; }
+        //     set { this.RaiseAndSetIfChanged(ref _BubbleSizeEnum, value); }
+        // }
+
+        private double _UIScale = 1.0; // 默认1.0
+        public double UIScale
         {
-            get { return _BubbleSizeEnum; }
-            set { this.RaiseAndSetIfChanged(ref _BubbleSizeEnum, value); }
+            get { return _UIScale; }
+            set { this.RaiseAndSetIfChanged(ref _UIScale, value); }
         }
 
         // advanced
@@ -139,7 +146,9 @@ namespace eynia.ViewModels
             _userConfig.ForceBreakType = ForceBreakType;
             _userConfig.PostponeCount = PostponeCount ?? 3;
             _userConfig.IsAllowPostpone = IsAllowPostpone;
-            _userConfig.BubbleSize = BubbleSize ?? "中";
+            // _userConfig.BubbleSize = BubbleSize ?? "中";
+            // _userConfig.UIScale = UIScale ?? 1.0;   // ?? 只能用于可空类型nullable types，这里用会报错
+            _userConfig.UIScale = UIScale > 0 ? UIScale : 1.0;
             _userConfig.IsAllowShowAlert = IsAllowShowAlert;
 
             // advanced
@@ -169,18 +178,20 @@ namespace eynia.ViewModels
             IsAllowShowAlert = _userConfig.IsAllowShowAlert;
 
             // appearance
-            BubbleSize = _userConfig.BubbleSize;
-            BubbleSizeEnum = BubbleSize switch
-            {
-                "非常小" => Size.VerySmall,
-                "小" => Size.Small,
-                "中" => Size.Medium,
-                "大" => Size.Large,
-                "非常大" => Size.VeryLarge,
-                _ => Size.Medium,
-            };
-            Console.WriteLine($"BubbleSize: {BubbleSize}");
-            Console.WriteLine($"BubbleSizeEnum: {BubbleSizeEnum}");
+            // BubbleSize = _userConfig.BubbleSize;
+            // BubbleSizeEnum = BubbleSize switch
+            // {
+            //     "非常小" => Size.VerySmall,
+            //     "小" => Size.Small,
+            //     "中" => Size.Medium,
+            //     "大" => Size.Large,
+            //     "非常大" => Size.VeryLarge,
+            //     _ => Size.Medium,
+            // };
+            // Console.WriteLine($"BubbleSize: {BubbleSize}");
+            // Console.WriteLine($"BubbleSizeEnum: {BubbleSizeEnum}");
+            UIScale = _userConfig.UIScale;
+            Console.WriteLine($"UIScale: {UIScale}");
 
             // advanced
             IsAllowAutoStart = _userConfig.IsAllowAutoStart;
