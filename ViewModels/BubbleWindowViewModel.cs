@@ -124,11 +124,58 @@ namespace eynia.ViewModels
 
         private RestWindow _restWindow;
         private bool _isRestWindowOpen = false; // 确保在计时器完成时只打开一个窗口
+        private int _saveConfigTickCounter = 0;
 
         public EventHandler<UserConfig>? OnConfigUpdated;
 
         private void Timer_Tick(object? sender, EventArgs e)
         {
+            if (userConfig.IsEnableDailyLimit)
+            {
+                string today = DateTime.Today.ToString("yyyy-MM-dd");
+                bool dateChanged = false;
+                bool limitReached = false;
+
+                if (userConfig.DailyLimitDate != today)
+                {
+                    userConfig.DailyLimitDate = today;
+                    userConfig.DailyLimitAccumulatedSeconds = 0;
+                    dateChanged = true;
+                }
+                else
+                {
+                    userConfig.DailyLimitAccumulatedSeconds += 1.0; // 计时器每秒触发一次
+                }
+
+                if (userConfig.DailyLimitAccumulatedSeconds >= (double)(userConfig.DailyLimitTime * 60))
+                {
+                    limitReached = true;
+                }
+
+                // 定期存盘，避免频繁写入导致磁盘损耗；若跨天或到达上限则立即存盘
+                _saveConfigTickCounter++;
+                if (dateChanged || limitReached || _saveConfigTickCounter >= 10)
+                {
+                    _saveConfigTickCounter = 0;
+                    try
+                    {
+                        new UserConfigService().SaveConfig(userConfig.SaveToDictionary());
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Error saving config in timer tick: {ex.Message}");
+                    }
+                }
+
+                if (limitReached)
+                {
+                    Dispatcher.UIThread.Post(() =>
+                    {
+                        OpenDailyLimitRestWindow();
+                    });
+                    return; // 达到限时，不更新正常的工作倒计时UI
+                }
+            }
 
             Dispatcher.UIThread.InvokeAsync(() =>
             {
@@ -142,7 +189,14 @@ namespace eynia.ViewModels
         private void RestWindow_Closed(object? sender, EventArgs e)
         {
             // 取消订阅事件:为了避免内存泄漏或不必要的事件订阅
-            _restWindow.Closed -= RestWindow_Closed;
+            if (sender is RestWindow rw)
+            {
+                rw.Closed -= RestWindow_Closed;
+            }
+            else
+            {
+                _restWindow.Closed -= RestWindow_Closed;
+            }
 
             // RestWindow 关闭时触发 Timer Reset+Resume 方法
             _timer.Reset();
@@ -167,6 +221,24 @@ namespace eynia.ViewModels
             var _restWindow = new RestWindow(userConfig);
             _restWindow.Closed += RestWindow_Closed; // 订阅关闭事件
             _restWindow.Show();
+        }
+
+        private void OpenDailyLimitRestWindow()
+        {
+            if (_isRestWindowOpen)
+            {
+                return;
+            }
+            _isRestWindowOpen = true;
+
+            // 重置并暂停正常计时器
+            _timer.Reset();
+            _timer.Pause();
+
+            // 打开每日限时锁屏窗口
+            var dlWindow = new RestWindow(userConfig, isDailyLimit: true);
+            dlWindow.Closed += RestWindow_Closed; // 订阅关闭事件
+            dlWindow.Show();
         }
 
         public void AddMinutes(int minutes)

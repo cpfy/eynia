@@ -21,37 +21,47 @@ namespace eynia.ViewModels
 {
     public class RestWindowViewModel : ViewModelBase
     {
-        private Timer _timer;
+        private Timer? _timer;
+        private UserConfig userConfig;
+        private bool _isDailyLimit;
 
-        public RestWindowViewModel(UserConfig userConfig)
+        public RestWindowViewModel(UserConfig userConfig, bool isDailyLimit = false)
         {
-            int t_rest = (int)userConfig.BreakLengthTime;  // default:5
-            _timer = new Timer(TimeSpan.FromMinutes(t_rest));
-            _timer.Tick += Timer_Tick;
+            this.userConfig = userConfig;
+            this._isDailyLimit = isDailyLimit;
 
-            // 订阅 Timer 完成事件：当 _timer 的 Completed 事件被触发时，忽略事件提供的 sender 和 e 参数，直接调用 ExitWindow() 方法
-            _timer.Completed += (sender, e) => ExitWindow();
-            // StartTimer();
+            if (isDailyLimit)
+            {
+                _RemainingTimeStr = "今日电脑使用时长已达上限，请离开电脑。";
+            }
+            else
+            {
+                int t_rest = (int)userConfig.BreakLengthTime;  // default:5
+                _timer = new Timer(TimeSpan.FromMinutes(t_rest));
+                _timer.Tick += Timer_Tick;
 
-            _RemainingTimeStr = _timer.RemainingTimeStr;
+                // 订阅 Timer 完成事件：当 _timer 的 Completed 事件被触发时，忽略事件提供的 sender 和 e 参数，直接调用 ExitWindow() 方法
+                _timer.Completed += (sender, e) => ExitWindow();
+                _RemainingTimeStr = _timer.RemainingTimeStr;
+            }
 
             // Unlock Button 可见性
-            // this.KeyDown += OnKeyDown;
-            // KeyPressCommand = ReactiveCommand.Create<KeyEventArgs>(OnKeyDown);
             UnlockCommand = ReactiveCommand.Create(ExitWindow);
         }
+
         public void StartTimer()
         {
-            _timer.Start();
+            _timer?.Start();
         }
 
         public void StopTimer()
         {
-            _timer.Stop();
+            _timer?.Stop();
         }
 
         private void Timer_Tick(object? sender, EventArgs e)
         {
+            if (_timer == null) return;
 
             Dispatcher.UIThread.InvokeAsync(() =>
             {
@@ -108,6 +118,20 @@ namespace eynia.ViewModels
 
         public void ChangeUnlockBtnState(){
             CanUnlock = !CanUnlock;
+            if (_isDailyLimit)
+            {
+                userConfig.DailyLimitAccumulatedSeconds = 0;
+                userConfig.DailyLimitDate = DateTime.Today.ToString("yyyy-MM-dd");
+                App.IsParentalModeUnlocked = true;
+                try
+                {
+                    new UserConfigService().SaveConfig(userConfig.SaveToDictionary());
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error saving config on backdoor unlock: {ex.Message}");
+                }
+            }
         }
 
         // 不可！Keyboard好像被ban了

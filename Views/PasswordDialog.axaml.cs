@@ -20,7 +20,8 @@ namespace eynia
 
         private void OnOkClick(object sender, RoutedEventArgs e)
         {
-            Password = PasswordBox.Text;
+            var passwordBox = this.Find<TextBox>("PasswordBox");
+            Password = passwordBox?.Text;
             Close();
         }
     }

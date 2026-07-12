@@ -10,6 +10,10 @@ using System;
 using System.Reflection;
 using System.Diagnostics; // for [DataMember]
 
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Controls;
+using System.Threading.Tasks;
+
 namespace eynia.ViewModels
 {
     public class SettingWindowViewModel : ViewModelBase
@@ -22,6 +26,7 @@ namespace eynia.ViewModels
             // _cfg_bak = new UserConfig(userConfig); // 备份
             SaveConfigCommand = ReactiveCommand.Create(SaveConfig);
             ResetConfigCommand = ReactiveCommand.Create(ResetConfig);
+            UnlockParentalControlsCommand = ReactiveCommand.CreateFromTask(UnlockParentalControls);
 
             // init fields from userConfig
             ResetConfig();
@@ -133,8 +138,67 @@ namespace eynia.ViewModels
         //     set { this.RaiseAndSetIfChanged(ref _IsAllowAutoDownloadUpdate, value); }
         // }
 
+        private bool _IsEnableDailyLimit;
+        public bool IsEnableDailyLimit
+        {
+            get { return _IsEnableDailyLimit; }
+            set { this.RaiseAndSetIfChanged(ref _IsEnableDailyLimit, value); }
+        }
+
+        private decimal? _DailyLimitTime;
+        public decimal? DailyLimitTime
+        {
+            get { return _DailyLimitTime; }
+            set { this.RaiseAndSetIfChanged(ref _DailyLimitTime, value); }
+        }
+
+        private bool _IsParentalControlsVisible = App.IsParentalModeUnlocked;
+        public bool IsParentalControlsVisible
+        {
+            get { return _IsParentalControlsVisible; }
+            set { this.RaiseAndSetIfChanged(ref _IsParentalControlsVisible, value); }
+        }
+
         public ICommand SaveConfigCommand { get; }
         public ICommand ResetConfigCommand { get; }
+        public ICommand UnlockParentalControlsCommand { get; }
+
+        private async Task UnlockParentalControls()
+        {
+            var passwordDialog = new PasswordDialog();
+            Window? owner = null;
+            if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                foreach (var w in desktop.Windows)
+                {
+                    if (w is SettingWindow)
+                    {
+                        owner = w;
+                        break;
+                    }
+                }
+                if (owner == null)
+                {
+                    owner = desktop.MainWindow;
+                }
+            }
+
+            if (owner != null)
+            {
+                await passwordDialog.ShowDialog(owner);
+                if (passwordDialog.Password == "885988")
+                {
+                    App.IsParentalModeUnlocked = true;
+                    IsParentalControlsVisible = true;
+                }
+                else if (passwordDialog.Password != null)
+                {
+                    var messageBox = MessageBox.Avalonia.MessageBoxManager
+                        .GetMessageBoxStandardWindow("提示", "密码错误，解锁失败！");
+                    await messageBox.ShowDialog(owner);
+                }
+            }
+        }
 
         public event EventHandler<UserConfig>? OnConfigUpdated; // 传递UserConfig示例
 
@@ -150,6 +214,10 @@ namespace eynia.ViewModels
             // _userConfig.UIScale = UIScale ?? 1.0;   // ?? 只能用于可空类型nullable types，这里用会报错
             _userConfig.UIScale = UIScale > 0 ? UIScale : 1.0;
             _userConfig.IsAllowShowAlert = IsAllowShowAlert;
+
+            // 家长控制
+            _userConfig.IsEnableDailyLimit = IsEnableDailyLimit;
+            _userConfig.DailyLimitTime = DailyLimitTime ?? 150;
 
             // advanced
             _userConfig.IsAllowAutoStart = IsAllowAutoStart;
@@ -176,6 +244,11 @@ namespace eynia.ViewModels
             PostponeCount = _userConfig.PostponeCount;
             IsAllowPostpone = _userConfig.IsAllowPostpone;
             IsAllowShowAlert = _userConfig.IsAllowShowAlert;
+
+            // 家长控制
+            IsEnableDailyLimit = _userConfig.IsEnableDailyLimit;
+            DailyLimitTime = _userConfig.DailyLimitTime;
+            IsParentalControlsVisible = App.IsParentalModeUnlocked;
 
             // appearance
             // BubbleSize = _userConfig.BubbleSize;

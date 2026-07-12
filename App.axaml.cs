@@ -16,6 +16,9 @@ namespace eynia
 {
     public partial class App : Application
     {
+        // 全局家长模式解锁状态
+        public static bool IsParentalModeUnlocked { get; set; } = false;
+
         // main window
         public BubbleWindow? bubbleWindow { get; private set; }
 

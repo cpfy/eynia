@@ -16,6 +16,12 @@ public class UserConfig
     public bool IsAllowPostpone { get; set; } = true;
     public bool IsAllowShowAlert { get; set; } = false;
 
+    // 家长控制 (每日屏幕限时)
+    public bool IsEnableDailyLimit { get; set; } = false;
+    public decimal DailyLimitTime { get; set; } = 150; // 默认2.5小时
+    public string DailyLimitDate { get; set; } = "";
+    public double DailyLimitAccumulatedSeconds { get; set; } = 0;
+
     // 外观
     // public string BubbleSize { get; set; } = "中";
     public double UIScale { get; set; } = 1.0; // 界面缩放比例
@@ -46,6 +52,19 @@ public class UserConfig
         if(data.TryGetValue(nameof(IsAllowShowAlert), out var isAllowShowAlert))
             IsAllowShowAlert = Convert.ToBoolean(isAllowShowAlert);
 
+        // 家长控制
+        if(data.TryGetValue(nameof(IsEnableDailyLimit), out var isEnableDailyLimit))
+            IsEnableDailyLimit = Convert.ToBoolean(isEnableDailyLimit);
+
+        if(data.TryGetValue(nameof(DailyLimitTime), out var dailyLimitTime))
+            DailyLimitTime = Convert.ToDecimal(dailyLimitTime);
+
+        if(data.TryGetValue(nameof(DailyLimitDate), out var dailyLimitDate))
+            DailyLimitDate = Convert.ToString(dailyLimitDate) ?? "";
+
+        if(data.TryGetValue(nameof(DailyLimitAccumulatedSeconds), out var dailyLimitAccumulatedSeconds))
+            DailyLimitAccumulatedSeconds = Convert.ToDouble(dailyLimitAccumulatedSeconds);
+
         // ------------------------------
 
         // if(data.TryGetValue(nameof(BubbleSize), out var bubbleSize))
@@ -70,6 +89,11 @@ public class UserConfig
             { nameof(PostponeCount), PostponeCount },
             { nameof(IsAllowPostpone), IsAllowPostpone },
             { nameof(IsAllowShowAlert), IsAllowShowAlert },
+            // 家长控制
+            { nameof(IsEnableDailyLimit), IsEnableDailyLimit },
+            { nameof(DailyLimitTime), DailyLimitTime },
+            { nameof(DailyLimitDate), DailyLimitDate },
+            { nameof(DailyLimitAccumulatedSeconds), DailyLimitAccumulatedSeconds },
             // { nameof(BubbleSize), BubbleSize },
             { nameof(UIScale), UIScale },
             { nameof(IsAllowAutoStart), IsAllowAutoStart }

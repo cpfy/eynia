@@ -21,13 +21,13 @@ namespace eynia.Views
         private RestWindowViewModel? vm => DataContext as RestWindowViewModel;
         private KeyboardHook? _keyboardHook;
 
-        public RestWindow() : this(new())  // new() 相当于null
+        public RestWindow() : this(new(), false)  // new() 相当于null
         {
         }
-        public RestWindow(UserConfig userConfig)
+        public RestWindow(UserConfig userConfig, bool isDailyLimit = false)
         {
             InitializeComponent();
-            var vm = new RestWindowViewModel(userConfig);
+            var vm = new RestWindowViewModel(userConfig, isDailyLimit);
             DataContext = vm;
             vm.OnRequestClose += (sender, e) => Close();
 
