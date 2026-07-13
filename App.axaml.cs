@@ -90,6 +90,12 @@ namespace eynia
 
         private void ExitApp(object sender, EventArgs e)
         {
+            if (_userConfig != null && _userConfig.IsEnableDailyLimit && !App.IsParentalModeUnlocked)
+            {
+                // 家长控制开启且未解锁时，禁止退出应用
+                return;
+            }
+
             // 保存当前配置数据
             if(_userConfig != null){
                 SaveConfigData(this, _userConfig);

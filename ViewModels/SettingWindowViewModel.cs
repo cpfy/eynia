@@ -31,6 +31,7 @@ namespace eynia.ViewModels
             SaveConfigCommand = ReactiveCommand.Create(SaveConfig);
             ResetConfigCommand = ReactiveCommand.Create(ResetConfig);
             UnlockParentalControlsCommand = ReactiveCommand.CreateFromTask(UnlockParentalControls);
+            LockParentalControlsCommand = ReactiveCommand.Create(LockParentalControls);
 
             // init fields from userConfig
             ResetConfig();
@@ -166,6 +167,28 @@ namespace eynia.ViewModels
         public ICommand SaveConfigCommand { get; }
         public ICommand ResetConfigCommand { get; }
         public ICommand UnlockParentalControlsCommand { get; }
+        public ICommand LockParentalControlsCommand { get; }
+
+        private void LockParentalControls()
+        {
+            App.IsParentalModeUnlocked = false;
+            IsParentalControlsVisible = false;
+        }
+
+        public string DailyLimitStatusStr
+        {
+            get
+            {
+                if (!_userConfig.IsEnableDailyLimit)
+                {
+                    return "今日使用状态：未启用每日使用限时。";
+                }
+                double total = (double)(_userConfig.DailyLimitTime * 60);
+                double accumulated = _userConfig.DailyLimitAccumulatedSeconds;
+                double remaining = Math.Max(0, total - accumulated);
+                return $"今日使用状态：\n已用时间：{TimeSpan.FromSeconds(accumulated).ToString(@"hh\:mm\:ss")}\n每日限时：{TimeSpan.FromSeconds(total).ToString(@"hh\:mm\:ss")}\n今日剩余：{TimeSpan.FromSeconds(remaining).ToString(@"hh\:mm\:ss")}";
+            }
+        }
 
         private async Task UnlockParentalControls()
         {
@@ -223,6 +246,8 @@ namespace eynia.ViewModels
             _userConfig.IsEnableDailyLimit = IsEnableDailyLimit;
             _userConfig.DailyLimitTime = DailyLimitTime ?? 150;
 
+            this.RaisePropertyChanged(nameof(DailyLimitStatusStr));
+
             // advanced
             _userConfig.IsAllowAutoStart = IsAllowAutoStart;
             if(OperatingSystem.IsWindows()){
@@ -253,6 +278,8 @@ namespace eynia.ViewModels
             IsEnableDailyLimit = _userConfig.IsEnableDailyLimit;
             DailyLimitTime = _userConfig.DailyLimitTime;
             IsParentalControlsVisible = App.IsParentalModeUnlocked;
+
+            this.RaisePropertyChanged(nameof(DailyLimitStatusStr));
 
             // appearance
             // BubbleSize = _userConfig.BubbleSize;

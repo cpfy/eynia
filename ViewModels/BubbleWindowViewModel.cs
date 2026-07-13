@@ -40,7 +40,14 @@ namespace eynia.ViewModels
             AddMinutesCommand = ReactiveCommand.Create<int>(AddMinutes);
             OpenSettingWindowCommand = ReactiveCommand.Create(OpenSettingWindow);
             ImmRestCommand = ReactiveCommand.Create(TimerFinished);
-            ExitAppCommand = ReactiveCommand.Create(() => Environment.Exit(0));
+            ExitAppCommand = ReactiveCommand.Create(() => 
+            {
+                if (userConfig.IsEnableDailyLimit && !App.IsParentalModeUnlocked)
+                {
+                    return;
+                }
+                Environment.Exit(0);
+            });
 
             PinnedOnTopCommand = ReactiveCommand.Create(ToggleTopMostState);
 
@@ -116,6 +123,21 @@ namespace eynia.ViewModels
             set { this.RaiseAndSetIfChanged(ref _RemainTimeBarValue, value); }
         }
 
+        public string DailyLimitRemainingStr
+        {
+            get
+            {
+                if (!userConfig.IsEnableDailyLimit)
+                {
+                    return "今日剩余屏幕时间: 无限制";
+                }
+                double remaining = Math.Max(0, (double)(userConfig.DailyLimitTime * 60) - userConfig.DailyLimitAccumulatedSeconds);
+                return $"今日剩余屏幕时间: {TimeSpan.FromSeconds(remaining).ToString(@"hh\:mm\:ss")}";
+            }
+        }
+
+        public bool IsExitAllowed => !userConfig.IsEnableDailyLimit || App.IsParentalModeUnlocked;
+
         public ICommand AddMinutesCommand { get; }
 
         public ICommand OpenSettingWindowCommand { get; }
@@ -183,6 +205,41 @@ namespace eynia.ViewModels
                 // SetCursorPos((int)centerPoint.X, (int)centerPoint.Y);
                 RemainingTimeStr = _timer.RemainingTimeStr;
                 RemainTimeBarValue = _timer.RemainTimeBarValue;
+
+                // 触发 UI 绑定属性更新
+                this.RaisePropertyChanged(nameof(DailyLimitRemainingStr));
+                this.RaisePropertyChanged(nameof(IsExitAllowed));
+
+                // 动态更新系统托盘
+                try
+                {
+                    var trayIcons = TrayIcon.GetIcons(Application.Current!);
+                    if (trayIcons != null && trayIcons.Count > 0)
+                    {
+                        var trayIcon = trayIcons[0];
+                        string nextRest = RemainingTimeStr;
+                        string dailyLimitStr = userConfig.IsEnableDailyLimit 
+                            ? TimeSpan.FromSeconds(Math.Max(0, (double)(userConfig.DailyLimitTime * 60) - userConfig.DailyLimitAccumulatedSeconds)).ToString(@"hh\:mm\:ss")
+                            : "无限制";
+                        trayIcon.ToolTipText = $"下次休息：{nextRest}\n今日剩余使用时间：{dailyLimitStr}";
+
+                        var menu = trayIcon.Menu;
+                        if (menu != null)
+                        {
+                            foreach (var item in menu.Items)
+                            {
+                                if (item is NativeMenuItem menuItem && menuItem.Header?.ToString() == "退出")
+                                {
+                                    menuItem.IsEnabled = !userConfig.IsEnableDailyLimit || App.IsParentalModeUnlocked;
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error updating tray icon: {ex.Message}");
+                }
             });
         }
 

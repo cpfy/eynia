@@ -9,7 +9,6 @@ namespace eynia.Models
         private readonly TimeSpan _interval = TimeSpan.FromSeconds(1);  // 单次更新计时器间隔，默认1s
         private CancellationTokenSource _cts;
         private Task? _timerTask;
-        private DateTime _startTime;
         private TimeSpan _elapsedTime; // 已经过时间
         public TimeSpan TotalDuration { get; set; }
         public TimeSpan CurrentTime => _elapsedTime;
@@ -39,7 +38,6 @@ namespace eynia.Models
             }
 
             _cts = new CancellationTokenSource();
-            _startTime = DateTime.Now;
             _isPaused = false;
 
             _timerTask = RunTimer(_cts.Token);
@@ -58,12 +56,9 @@ namespace eynia.Models
                 return;
             }
 
-
             _isPaused = false;
             _cts = new CancellationTokenSource();
             _timerTask = RunTimer(_cts.Token);
-
-            // Start();
         }
 
         public void Stop()
@@ -77,40 +72,42 @@ namespace eynia.Models
 
         public void Reset()
         {
-            _startTime = DateTime.Now;
             _elapsedTime = TimeSpan.Zero;
         }
 
         public void AddMinutes(int minutes)
         {
-            _startTime = _startTime.Add(TimeSpan.FromMinutes(minutes));
-            if(_startTime > DateTime.Now)
+            _elapsedTime -= TimeSpan.FromMinutes(minutes);
+            if (_elapsedTime < TimeSpan.Zero)
             {
-                _startTime = DateTime.Now;
+                _elapsedTime = TimeSpan.Zero;
             }
-            _elapsedTime = DateTime.Now - _startTime;
         }
 
         // UI显示用
         public string RemainingTimeStr => (TotalDuration - _elapsedTime).ToString(@"mm\:ss");
-        // public decimal RemainTimeBarValue =>(
-        // {
-        //     var value = _elapsedTime.TotalSeconds / TotalDuration.TotalSeconds * 100;
-        //     // 由于progressbar UI显示不全，value再次归一化到[30,70]。估计因为minimum=100，此时width=height=40
-        //     value = value * 0.4 + 30;
-        //     return (decimal)value;
-        // })
         public double RemainTimeBarValue => (70 - _elapsedTime.TotalSeconds / TotalDuration.TotalSeconds * 40);
 
         private async Task RunTimer(CancellationToken cancellationToken)
         {
             while (!cancellationToken.IsCancellationRequested && _elapsedTime < TotalDuration)
             {
-                await Task.Delay(_interval, cancellationToken);
+                try
+                {
+                    await Task.Delay(_interval, cancellationToken);
+                }
+                catch (TaskCanceledException)
+                {
+                    break;
+                }
 
                 if (!_isPaused)
                 {
-                    _elapsedTime = DateTime.Now - _startTime;
+                    _elapsedTime = _elapsedTime.Add(_interval);
+                    if (_elapsedTime > TotalDuration)
+                    {
+                        _elapsedTime = TotalDuration;
+                    }
                     Tick?.Invoke(this, EventArgs.Empty);
                 }
             }
@@ -127,6 +124,10 @@ namespace eynia.Models
         {
             Pause();
             TotalDuration = TimeSpan.FromMinutes(updatedMinute);
+            if (_elapsedTime > TotalDuration)
+            {
+                _elapsedTime = TotalDuration;
+            }
             Resume();
         }
     }

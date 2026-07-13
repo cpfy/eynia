@@ -24,5 +24,12 @@ namespace eynia.Views
         {
             AvaloniaXamlLoader.Load(this);
         }
+
+        protected override void OnClosed(System.EventArgs e)
+        {
+            // 关闭窗口时，自动清除家长临时解锁状态
+            App.IsParentalModeUnlocked = false;
+            base.OnClosed(e);
+        }
     }
 }

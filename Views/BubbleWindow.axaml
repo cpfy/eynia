@@ -22,6 +22,8 @@
     <!-- 在Resourse中定义了一个MenuFlyout，用于在多个控件中共享右键菜单 -->
     <Window.Resources>
         <ContextMenu x:Key="SharedMenu">
+            <MenuItem Header="{Binding DailyLimitRemainingStr}" IsEnabled="False"/>
+            <Separator />
             <MenuItem Header="设置属性" Command="{Binding OpenSettingWindowCommand}">
                 <MenuItem.Icon>
                     <PathIcon Width="14" Height="14" Data="{StaticResource settings_regular}"/>
@@ -70,8 +72,7 @@
             </MenuItem>
             <MenuItem Header="立即休息" Command="{Binding ImmRestCommand}"/>
             <Separator />
-            <!-- <MenuItem Header="退出" Command="{Binding ExitAppCommand}"/> -->
-            <MenuItem Header="退出">
+            <MenuItem Header="退出" Command="{Binding ExitAppCommand}" IsEnabled="{Binding IsExitAllowed}">
                 <MenuItem.Icon>
                     <PathIcon Width="14" Height="14" Data="{StaticResource power_regular}"/>
                 </MenuItem.Icon>
