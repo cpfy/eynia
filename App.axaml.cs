@@ -111,9 +111,16 @@ namespace eynia
             if (bubbleWindow != null)
             {
                 var vm = bubbleWindow.DataContext as BubbleWindowViewModel;
-                if (vm != null && !vm.IsPostponeAllowed)
+                if (vm != null)
                 {
-                    return; // 拦截！
+                    if (vm.userConfig.IsEnableDailyLimit && !App.IsParentalModeUnlocked)
+                    {
+                        return; // 拦截！
+                    }
+                    if (!vm.IsPostponeAllowed)
+                    {
+                        return; // 拦截！
+                    }
                 }
             }
 

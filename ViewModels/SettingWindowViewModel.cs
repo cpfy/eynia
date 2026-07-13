@@ -179,9 +179,9 @@ namespace eynia.ViewModels
             }
         }
 
-        public string[] AvailableParentalStyles { get; } = new string[] { "锁定只读", "欺骗模式" };
+        public string[] AvailableParentalStyles { get; } = new string[] { "锁定只读", "无效模式" };
 
-        public bool IsBasicSettingsEnabled => IsParentalControlsVisible || ParentalControlStyle == "欺骗模式";
+        public bool IsBasicSettingsEnabled => IsParentalControlsVisible || ParentalControlStyle == "无效模式";
 
         public ICommand SaveConfigCommand { get; }
         public ICommand ResetConfigCommand { get; }
@@ -250,9 +250,9 @@ namespace eynia.ViewModels
 
         private void SaveConfig()
         {
-            if (_userConfig.IsEnableDailyLimit && !App.IsParentalModeUnlocked && _userConfig.ParentalControlStyle == "欺骗模式")
+            if (_userConfig.IsEnableDailyLimit && !App.IsParentalModeUnlocked && _userConfig.ParentalControlStyle == "无效模式")
             {
-                // 欺骗模式且锁定状态下，直接丢弃修改并还原
+                // 无效模式且锁定状态下，直接丢弃修改并还原
                 ResetConfig();
                 return;
             }

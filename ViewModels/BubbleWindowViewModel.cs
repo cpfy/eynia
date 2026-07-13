@@ -137,10 +137,10 @@ namespace eynia.ViewModels
             }
         }
 
-        public bool IsExitAllowed => !userConfig.IsEnableDailyLimit || App.IsParentalModeUnlocked;
+        public bool IsExitAllowed => !userConfig.IsEnableDailyLimit || App.IsParentalModeUnlocked || userConfig.ParentalControlStyle == "无效模式";
 
         private int _postponedTimes = 0;
-        public bool IsPostponeAllowed => userConfig.IsAllowPostpone && _postponedTimes < (int)userConfig.PostponeCount;
+        public bool IsPostponeAllowed => !userConfig.IsEnableDailyLimit || App.IsParentalModeUnlocked || userConfig.ParentalControlStyle == "无效模式" || (userConfig.IsAllowPostpone && _postponedTimes < (int)userConfig.PostponeCount);
 
         public ICommand AddMinutesCommand { get; }
 
@@ -315,6 +315,12 @@ namespace eynia.ViewModels
 
         public void AddMinutes(int minutes)
         {
+            if (userConfig.IsEnableDailyLimit && !App.IsParentalModeUnlocked)
+            {
+                // 处于锁定状态时（无论是锁定只读还是无效模式），不执行推迟
+                return;
+            }
+
             if (!IsPostponeAllowed)
             {
                 return;
