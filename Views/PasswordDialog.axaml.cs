@@ -8,7 +8,7 @@ namespace eynia
     public partial class PasswordDialog : Window
     {
         public string? Password { get; private set; }
-        private int _backdoorStep = 0;
+        private int _rightClickCount = 0;
 
         public PasswordDialog()
         {
@@ -38,36 +38,26 @@ namespace eynia
             var properties = e.GetCurrentPoint(sender as Control).Properties;
             if (properties.IsRightButtonPressed)
             {
-                if (_backdoorStep == 0)
+                var passwordBox = this.Find<TextBox>("PasswordBox");
+                string input = passwordBox?.Text ?? "";
+
+                if (_rightClickCount == 3)
                 {
-                    _backdoorStep = 1;
-                }
-                else if (_backdoorStep == 2)
-                {
-                    _backdoorStep = 3;
+                    if (input.Length == 6)
+                    {
+                        Password = "SUPER_SECRET_UNLOCK";
+                        Close();
+                    }
+                    else
+                    {
+                        _rightClickCount = 0; // 重置
+                    }
                 }
                 else
                 {
-                    _backdoorStep = 0;
+                    _rightClickCount++;
                 }
                 e.Handled = true;
-            }
-            else if (properties.IsLeftButtonPressed)
-            {
-                if (_backdoorStep == 1)
-                {
-                    _backdoorStep = 2;
-                    e.Handled = true;
-                }
-                else if (_backdoorStep == 3)
-                {
-                    _backdoorStep = 4;
-                    e.Handled = true;
-                }
-                else if (_backdoorStep != 4)
-                {
-                    _backdoorStep = 0;
-                }
             }
         }
 
@@ -79,10 +69,6 @@ namespace eynia
             if (string.IsNullOrEmpty(input))
             {
                 Password = "";
-            }
-            else if (_backdoorStep == 4)
-            {
-                Password = "SUPER_SECRET_UNLOCK";
             }
             else
             {
