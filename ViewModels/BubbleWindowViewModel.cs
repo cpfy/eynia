@@ -18,7 +18,7 @@ namespace eynia.ViewModels
     public class BubbleWindowViewModel : ViewModelBase
     {
         private Timer _timer;
-        private UserConfig userConfig;
+        public UserConfig userConfig;
 
         public BubbleWindowViewModel(UserConfig userConfig)
         {
