@@ -21,6 +21,7 @@ public class UserConfig
     public decimal DailyLimitTime { get; set; } = 150; // 默认2.5小时
     public string DailyLimitDate { get; set; } = "";
     public double DailyLimitAccumulatedSeconds { get; set; } = 0;
+    public string ParentalControlStyle { get; set; } = "锁定只读";
 
     // 外观
     // public string BubbleSize { get; set; } = "中";
@@ -65,6 +66,9 @@ public class UserConfig
         if(data.TryGetValue(nameof(DailyLimitAccumulatedSeconds), out var dailyLimitAccumulatedSeconds))
             DailyLimitAccumulatedSeconds = Convert.ToDouble(dailyLimitAccumulatedSeconds);
 
+        if(data.TryGetValue(nameof(ParentalControlStyle), out var parentalControlStyle))
+            ParentalControlStyle = Convert.ToString(parentalControlStyle) ?? "锁定只读";
+
         // ------------------------------
 
         // if(data.TryGetValue(nameof(BubbleSize), out var bubbleSize))
@@ -94,6 +98,7 @@ public class UserConfig
             { nameof(DailyLimitTime), DailyLimitTime },
             { nameof(DailyLimitDate), DailyLimitDate },
             { nameof(DailyLimitAccumulatedSeconds), DailyLimitAccumulatedSeconds },
+            { nameof(ParentalControlStyle), ParentalControlStyle },
             // { nameof(BubbleSize), BubbleSize },
             { nameof(UIScale), UIScale },
             { nameof(IsAllowAutoStart), IsAllowAutoStart }

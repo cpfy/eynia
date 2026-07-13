@@ -139,6 +139,9 @@ namespace eynia.ViewModels
 
         public bool IsExitAllowed => !userConfig.IsEnableDailyLimit || App.IsParentalModeUnlocked;
 
+        private int _postponedTimes = 0;
+        public bool IsPostponeAllowed => userConfig.IsAllowPostpone && _postponedTimes < (int)userConfig.PostponeCount;
+
         public ICommand AddMinutesCommand { get; }
 
         public ICommand OpenSettingWindowCommand { get; }
@@ -210,6 +213,7 @@ namespace eynia.ViewModels
                 // 触发 UI 绑定属性更新
                 this.RaisePropertyChanged(nameof(DailyLimitRemainingStr));
                 this.RaisePropertyChanged(nameof(IsExitAllowed));
+                this.RaisePropertyChanged(nameof(IsPostponeAllowed));
 
                 // 动态更新系统托盘
                 try
@@ -229,9 +233,16 @@ namespace eynia.ViewModels
                         {
                             foreach (var item in menu.Items)
                             {
-                                if (item is NativeMenuItem menuItem && menuItem.Header?.ToString() == "退出")
+                                if (item is NativeMenuItem menuItem)
                                 {
-                                    menuItem.IsEnabled = !userConfig.IsEnableDailyLimit || App.IsParentalModeUnlocked;
+                                    if (menuItem.Header?.ToString() == "退出")
+                                    {
+                                        menuItem.IsEnabled = !userConfig.IsEnableDailyLimit || App.IsParentalModeUnlocked;
+                                    }
+                                    else if (menuItem.Header?.ToString() == "推迟休息")
+                                    {
+                                        menuItem.IsEnabled = IsPostponeAllowed;
+                                    }
                                 }
                             }
                         }
@@ -259,6 +270,9 @@ namespace eynia.ViewModels
             // RestWindow 关闭时触发 Timer Reset+Resume 方法
             _timer.Reset();
             _timer.Resume();
+
+            _postponedTimes = 0;
+            this.RaisePropertyChanged(nameof(IsPostponeAllowed));
 
             _isRestWindowOpen = false;
         }
@@ -301,7 +315,13 @@ namespace eynia.ViewModels
 
         public void AddMinutes(int minutes)
         {
+            if (!IsPostponeAllowed)
+            {
+                return;
+            }
+            _postponedTimes++;
             _timer.AddMinutes(minutes);
+            this.RaisePropertyChanged(nameof(IsPostponeAllowed));
         }
 
         private void OpenSettingWindow()

@@ -26,7 +26,7 @@
         <!-- 分栏 -->
         <TabControl Grid.Row="0">
             <TabItem Header="基础设置">
-                <StackPanel Margin="10" IsEnabled="{Binding IsParentalControlsVisible}">
+                <StackPanel Margin="10" IsEnabled="{Binding IsBasicSettingsEnabled}">
                     <Grid ColumnDefinitions="Auto, Auto" RowDefinitions="Auto, Auto">
                         <!-- 休息时间间隔 -->
                         <TextBlock Grid.Row="0" Grid.Column="0" Text="休息时间间隔 (分钟):" VerticalAlignment="Center" Margin="5"/>
@@ -111,6 +111,11 @@
                         <TextBlock Grid.Row="0" Grid.Column="0" Text="每日限制时长 (分钟):" VerticalAlignment="Center" Margin="0,0,10,0"/>
                         <NumericUpDown Grid.Row="0" Grid.Column="1" Minimum="1" Maximum="1440" FormatString="0" Value="{Binding DailyLimitTime}" VerticalAlignment="Center"/>
                     </Grid>
+                    <StackPanel Orientation="Horizontal" Margin="5,10,0,0">
+                        <TextBlock Text="控制限制风格:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                        <ComboBox ItemsSource="{Binding AvailableParentalStyles}"
+                                  SelectedItem="{Binding ParentalControlStyle}" VerticalAlignment="Center"/>
+                    </StackPanel>
                     <!-- 今日可用与剩余时间提示 -->
                     <TextBlock Text="{Binding DailyLimitStatusStr}" Margin="5,15,5,5" Foreground="Gray" FontSize="13" TextWrapping="Wrap"/>
                 </StackPanel>

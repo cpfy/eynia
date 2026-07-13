@@ -108,7 +108,15 @@ namespace eynia
         }
         private void DelayRest(object sender, EventArgs e)
         {
-            // 也可：var menuItem = sender as NativeMenuItem;
+            if (bubbleWindow != null)
+            {
+                var vm = bubbleWindow.DataContext as BubbleWindowViewModel;
+                if (vm != null && !vm.IsPostponeAllowed)
+                {
+                    return; // 拦截！
+                }
+            }
+
             if (sender is NativeMenuItem menuItem)
             {
                 string header = menuItem.Header!.ToString(); // 格式形如：x分钟。使用空条件运算符

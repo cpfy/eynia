@@ -53,7 +53,7 @@
                 </MenuItem.Icon>
             </MenuItem>
             <Separator />
-            <MenuItem Header="推迟休息">
+            <MenuItem Header="推迟休息" IsEnabled="{Binding IsPostponeAllowed}">
                 <MenuItem Header="3分钟" Command="{Binding AddMinutesCommand}">
                     <MenuItem.CommandParameter>
                         <sys:Int32>3</sys:Int32>

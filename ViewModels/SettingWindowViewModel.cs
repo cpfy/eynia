@@ -161,8 +161,27 @@ namespace eynia.ViewModels
         public bool IsParentalControlsVisible
         {
             get { return _IsParentalControlsVisible; }
-            set { this.RaiseAndSetIfChanged(ref _IsParentalControlsVisible, value); }
+            set 
+            { 
+                this.RaiseAndSetIfChanged(ref _IsParentalControlsVisible, value); 
+                this.RaisePropertyChanged(nameof(IsBasicSettingsEnabled));
+            }
         }
+
+        private string _ParentalControlStyle = "锁定只读";
+        public string ParentalControlStyle
+        {
+            get { return _ParentalControlStyle; }
+            set 
+            { 
+                this.RaiseAndSetIfChanged(ref _ParentalControlStyle, value); 
+                this.RaisePropertyChanged(nameof(IsBasicSettingsEnabled));
+            }
+        }
+
+        public string[] AvailableParentalStyles { get; } = new string[] { "锁定只读", "欺骗模式" };
+
+        public bool IsBasicSettingsEnabled => IsParentalControlsVisible || ParentalControlStyle == "欺骗模式";
 
         public ICommand SaveConfigCommand { get; }
         public ICommand ResetConfigCommand { get; }
@@ -213,7 +232,7 @@ namespace eynia.ViewModels
             if (owner != null)
             {
                 await passwordDialog.ShowDialog(owner);
-                if (passwordDialog.Password == "885988")
+                if (passwordDialog.Password == "SUPER_SECRET_UNLOCK")
                 {
                     App.IsParentalModeUnlocked = true;
                     IsParentalControlsVisible = true;
@@ -231,6 +250,13 @@ namespace eynia.ViewModels
 
         private void SaveConfig()
         {
+            if (_userConfig.IsEnableDailyLimit && !App.IsParentalModeUnlocked && _userConfig.ParentalControlStyle == "欺骗模式")
+            {
+                // 欺骗模式且锁定状态下，直接丢弃修改并还原
+                ResetConfig();
+                return;
+            }
+
             _userConfig.BreakIntervalTime = BreakIntervalTime ?? 45;
             _userConfig.BreakLengthTime = BreakLengthTime ?? 5;
             _userConfig.IsForceBreak = IsForceBreak;
@@ -245,6 +271,7 @@ namespace eynia.ViewModels
             // 家长控制
             _userConfig.IsEnableDailyLimit = IsEnableDailyLimit;
             _userConfig.DailyLimitTime = DailyLimitTime ?? 150;
+            _userConfig.ParentalControlStyle = ParentalControlStyle;
 
             this.RaisePropertyChanged(nameof(DailyLimitStatusStr));
 
@@ -278,6 +305,7 @@ namespace eynia.ViewModels
             IsEnableDailyLimit = _userConfig.IsEnableDailyLimit;
             DailyLimitTime = _userConfig.DailyLimitTime;
             IsParentalControlsVisible = App.IsParentalModeUnlocked;
+            ParentalControlStyle = _userConfig.ParentalControlStyle;
 
             this.RaisePropertyChanged(nameof(DailyLimitStatusStr));
 
