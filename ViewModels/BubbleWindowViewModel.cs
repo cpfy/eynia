@@ -1,6 +1,7 @@
 using Avalonia; // for Application
 using Avalonia.Threading;
 using Avalonia.Media; // for StreamGeometry
+using Avalonia.Controls;
 
 using ReactiveUI;
 using System;
@@ -214,7 +215,7 @@ namespace eynia.ViewModels
                 try
                 {
                     var trayIcons = TrayIcon.GetIcons(Application.Current!);
-                    if (trayIcons != null && trayIcons.Count > 0)
+                    if (trayIcons != null && System.Linq.Enumerable.Any(trayIcons))
                     {
                         var trayIcon = trayIcons[0];
                         string nextRest = RemainingTimeStr;
