@@ -13,6 +13,10 @@ using System.Diagnostics; // for [DataMember]
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Controls;
 using System.Threading.Tasks;
+using eynia.Views;
+using eynia;
+using MsBox.Avalonia;
+using MsBox.Avalonia.Enums;
 
 namespace eynia.ViewModels
 {
@@ -193,9 +197,9 @@ namespace eynia.ViewModels
                 }
                 else if (passwordDialog.Password != null)
                 {
-                    var messageBox = MessageBox.Avalonia.MessageBoxManager
-                        .GetMessageBoxStandardWindow("提示", "密码错误，解锁失败！");
-                    await messageBox.ShowDialog(owner);
+                    var messageBox = MessageBoxManager
+                        .GetMessageBoxStandard("提示", "密码错误，解锁失败！", ButtonEnum.Ok);
+                    await messageBox.ShowWindowDialogAsync(owner);
                 }
             }
         }
